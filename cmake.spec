@@ -1,16 +1,14 @@
-%define version 2.4.6
-%define release 2
-
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: %version
-Release: %mkrel %release
+Version: 2.4.6
+Release: %mkrel 3
 License: BSD
 Group:  Development/Other
 Url: http://www.cmake.org/HTML/Index.html
 Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.bz2
+Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
 # fix ftlk detection
@@ -48,14 +46,14 @@ perl -pi -e 's#/usr/X11R6/lib#/usr/X11R6/lib64#' `find -type f`
 %make
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+rm -rf %buildroot
+make install DESTDIR=%buildroot
 
 # cmake mode for emacs
-install -d $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/
-install -m644 Docs/cmake-mode.el $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/emacs/site-start.d
-cat <<EOF >$RPM_BUILD_ROOT%{_sysconfdir}/emacs/site-start.d/%{name}.el
+install -d %buildroot%_datadir/emacs/site-lisp/
+install -m644 Docs/cmake-mode.el %buildroot%_datadir/emacs/site-lisp/
+install -d %buildroot%_sysconfdir/emacs/site-start.d
+cat <<EOF >%buildroot%_sysconfdir/emacs/site-start.d/%{name}.el
 (setq load-path (cons (expand-file-name "/dir/with/cmake-mode") load-path))
 (require 'cmake-mode)
 (setq auto-mode-alist
@@ -64,15 +62,14 @@ cat <<EOF >$RPM_BUILD_ROOT%{_sysconfdir}/emacs/site-start.d/%{name}.el
               auto-mode-alist))
 EOF
 
-# docs are managed with %doc
-rm -rf $RPM_BUILD_ROOT/%{_prefix}/doc
-# don't package installed files again as docs
-rm Docs/ctest.1 Docs/cmake.1 Docs/ccmake.1 Docs/cmake-mode.el
-# these come with vim-common
-rm Docs/cmake-{indent,syntax}.vim
+install -d -m 755 %buildroot%_sysconfdir/rpm/macros.d/
+install -m 644 %SOURCE1 %buildroot%_sysconfdir/rpm/macros.d/
+for name in Docs/ctest.1 Docs/cmake.1 Docs/ccmake.1 Docs/cmake-mode.el Docs/cmake-indent.vim Docs/cmake-syntax.vim; do
+    rm -f ${name}
+done
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 %files
 %defattr(-,root,root)
@@ -83,8 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/man/man1/*
 %_datadir/cmake-%shortVersion/
 %_sysconfdir/emacs/site-start.d/%{name}.el
+%_sysconfdir/rpm/macros.d/*
 %_datadir/emacs/site-lisp/cmake-mode.el
 %doc CMakeLogo.gif ChangeLog.txt Docs/* Example
-
-
+%exclude %_prefix/doc
 
