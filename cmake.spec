@@ -2,8 +2,8 @@
 
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.4.6
-Release: %mkrel 3
+Version: 2.4.7
+Release: %mkrel 1
 License: BSD
 Group:  Development/Other
 Url: http://www.cmake.org/HTML/Index.html
@@ -84,4 +84,3 @@ rm -rf %buildroot
 %_datadir/emacs/site-lisp/cmake-mode.el
 %doc CMakeLogo.gif ChangeLog.txt Docs/* Example
 %exclude %_prefix/doc
-
