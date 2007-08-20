@@ -77,7 +77,7 @@ rm -rf %buildroot
 %_bindir/ccmake
 %_bindir/ctest
 %_bindir/cpack
-%_datadir/man/man1/*
+%_mandir/man1/*
 %_datadir/cmake-%shortVersion/
 %_sysconfdir/emacs/site-start.d/%{name}.el
 %_sysconfdir/rpm/macros.d/*
