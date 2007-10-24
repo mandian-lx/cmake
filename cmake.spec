@@ -1,13 +1,23 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
+%define branch 1
+%{?_branch: %{expand: %%global branch 1}}
+
+%define date   20071024
+%define oname  CMake
+
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.4.7
-Release: %mkrel 1
+Version: 2.5.0
+Release: %mkrel 0.%{date}.1
 License: BSD
 Group:  Development/Other
 Url: http://www.cmake.org/HTML/Index.html
+%if %branch
+Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{date}.tar.bz2
+%else
 Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.bz2
+%endif
 Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
@@ -29,7 +39,12 @@ generation, and template instantiation.
 
 %prep
 
+%if %branch
+%setup -q -n %oname
+%else
 %setup -q -n %name-%{version}
+%endif
+
 %patch0
 %patch1
 
