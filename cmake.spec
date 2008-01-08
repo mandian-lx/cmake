@@ -9,7 +9,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.5.0
-Release: %mkrel 0.%{date}.1
+Release: %mkrel 0.%{date}.2
 License: BSD
 Group:  Development/Other
 Url: http://www.cmake.org/HTML/Index.html
@@ -23,6 +23,8 @@ Source1: cmake.macros
 Patch0: cmake-vtk-5.0.patch
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
+# (blino, from cmake-2.4 CVS) fix wx-config output being flattened
+Patch2: cmake-wx-config.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: chrpath
 BuildRequires: perl
@@ -47,6 +49,7 @@ generation, and template instantiation.
 
 %patch0
 %patch1
+%patch2
 
 %if "%{_lib}" != "lib"
 perl -pi -e 's#usr/lib#usr/lib64#' `find -type f`
