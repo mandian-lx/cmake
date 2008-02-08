@@ -1,28 +1,21 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
-%define branch 1
-%{?_branch: %{expand: %%global branch 1}}
-
-%define date   20080106
-%define oname  CMake
-
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.5.0
-Release: %mkrel 0.%{date}.1
+Version: 2.4.8
+Release: %mkrel 1
 License: BSD
-Group:  Development/Other
+Group: Development/Other
+Epoch: 1
 Url: http://www.cmake.org/HTML/Index.html
-%if %branch
-Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{date}.tar.bz2
-%else
-Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.bz2
-%endif
+Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.gz
 Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
+Patch2: cmake-wx-config.patch
+Patch3: cmake-expat.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: chrpath
 BuildRequires: perl
@@ -39,14 +32,12 @@ generation, and template instantiation.
 
 %prep
 
-%if %branch
-%setup -q -n %oname
-%else
 %setup -q -n %name-%{version}
-%endif
 
 %patch0
 %patch1
+%patch2 -p1
+%patch3 -p1
 
 %if "%{_lib}" != "lib"
 perl -pi -e 's#usr/lib#usr/lib64#' `find -type f`
