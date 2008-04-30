@@ -2,20 +2,18 @@
 
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.4.8
-Release: %mkrel 1
+Version: 2.6.0
+Release: %mkrel 0.1.rc9
 License: BSD
 Group: Development/Other
 Epoch: 1
 Url: http://www.cmake.org/HTML/Index.html
-Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.gz
+Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-RC-9.tar.gz
 Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
-Patch2: cmake-wx-config.patch
-Patch3: cmake-expat.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: chrpath
 BuildRequires: perl
@@ -32,12 +30,10 @@ generation, and template instantiation.
 
 %prep
 
-%setup -q -n %name-%{version}
+%setup -q -n %name-%{version}-RC-9
 
 %patch0
 %patch1
-%patch2 -p1
-%patch3 -p1
 
 %if "%{_lib}" != "lib"
 perl -pi -e 's#usr/lib#usr/lib64#' `find -type f`
