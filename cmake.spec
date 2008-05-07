@@ -3,12 +3,12 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.0
-Release: %mkrel 0.1.rc9
+Release: %mkrel 1
 License: BSD
 Group: Development/Other
 Epoch: 1
 Url: http://www.cmake.org/HTML/Index.html
-Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-RC-9.tar.gz
+Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.gz
 Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
@@ -30,8 +30,7 @@ generation, and template instantiation.
 
 %prep
 
-%setup -q -n %name-%{version}-RC-9
-
+%setup -q -n %name-%{version}
 %patch0
 %patch1
 
@@ -42,8 +41,8 @@ perl -pi -e 's#/usr/X11R6/lib#/usr/X11R6/lib64#' `find -type f`
 
 %build
 ./configure \
-   --prefix=%{_prefix} \
-   --mandir=/share/man
+	--prefix=%{_prefix} \
+	--mandir=/share/man
 
 %make
 
