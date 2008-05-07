@@ -7,7 +7,7 @@ Release: %mkrel 1
 License: BSD
 Group: Development/Other
 Epoch: 1
-Url: http://www.cmake.org/HTML/Index.html
+Url: http://www.cmake.org/HTML/index.html
 Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.gz
 Source1: cmake.macros
 # fix vtk 5.0 detection
