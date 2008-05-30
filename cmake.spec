@@ -3,7 +3,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.0
-Release: %mkrel 1
+Release: %mkrel 2
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -38,6 +38,10 @@ generation, and template instantiation.
 perl -pi -e 's#usr/lib#usr/lib64#' `find -type f`
 perl -pi -e 's#/usr/X11R6/lib#/usr/X11R6/lib64#' `find -type f`
 %endif
+
+# Don't try to automagically find files in /usr/X11R6
+# But also don't change a prefix if it is not /usr
+perl -pi -e 's@^\s+/usr/X11R6/.*\n@@' Modules/*.cmake
 
 %build
 ./configure \
