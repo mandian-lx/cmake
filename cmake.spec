@@ -3,7 +3,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.0
-Release: %mkrel 2
+Release: %mkrel 3
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -18,6 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: chrpath
 BuildRequires: perl
 BuildRequires: ncurses-devel
+Requires: rpm-manbo-setup >= 2-10
 
 %description
 CMake is used to control the software compilation process using
