@@ -3,7 +3,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.0
-Release: %mkrel 3
+Release: %mkrel 4
 License: BSD
 Group: Development/Other
 Epoch: 1
