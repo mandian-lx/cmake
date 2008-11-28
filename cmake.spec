@@ -3,7 +3,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.2
-Release: %mkrel 1
+Release: %mkrel 2
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -18,6 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: chrpath
 BuildRequires: perl
 BuildRequires: ncurses-devel
+BuildRequires: libqt4-devel >= 4.4.0
 Requires: rpm-manbo-setup >= 2-10
 
 %description
@@ -28,6 +29,17 @@ used in the compiler environment of your choice. CMake is quite
 sophisticated: it is possible to support complex environments
 requiring system configuration, pre-processor generation, code
 generation, and template instantiation.
+
+%package -n %{name}-qtgui
+Summary:    Qt GUI Dialog for CMake - the Cross-platform, open-source make system
+Group:      Development/Other
+Requires:   %name
+
+%description -n %{name}-qtgui
+CMake is used to control the software compilation process using
+simple platform and compiler independent configuration files.
+
+This is the Qt GUI.
 
 %prep
 
@@ -47,7 +59,8 @@ perl -pi -e 's@^\s+/usr/X11R6/.*\n@@' Modules/*.cmake
 %build
 ./configure \
 	--prefix=%{_prefix} \
-	--mandir=/share/man
+	--mandir=/share/man \
+    --qt-gui
 
 %make
 
@@ -90,3 +103,11 @@ rm -rf %buildroot
 %_datadir/emacs/site-lisp/cmake-mode.el
 %doc CMakeLogo.gif ChangeLog.txt Docs/* Example
 %exclude %_prefix/doc
+
+
+%files -n %{name}-qtgui
+%_bindir/cmake-gui
+%_datadir/applications/CMake.desktop
+%_datadir/mime/packages/cmakecache.xml
+%_datadir/pixmaps/CMakeSetup.png
+
