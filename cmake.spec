@@ -3,7 +3,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.3
-Release: %mkrel 0.RC5.1
+Release: %mkrel 0.RC5.2
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -57,6 +57,7 @@ perl -pi -e 's#/usr/X11R6/lib#/usr/X11R6/lib64#' `find -type f`
 perl -pi -e 's@^\s+/usr/X11R6/.*\n@@' Modules/*.cmake
 
 %build
+%setup_compile_flags
 ./configure \
 	--prefix=%{_prefix} \
 	--mandir=/share/man \
