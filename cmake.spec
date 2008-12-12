@@ -3,7 +3,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.3
-Release: %mkrel 0.RC5.2
+Release: %mkrel 0.RC5.3
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -18,6 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: chrpath
 BuildRequires: perl
 BuildRequires: ncurses-devel
+BuildRequires: idn-devel
 BuildRequires: libqt4-devel >= 4.4.0
 Requires: rpm-manbo-setup >= 2-10
 
