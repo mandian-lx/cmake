@@ -3,12 +3,12 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.3
-Release: %mkrel 0.RC5.3
+Release: %mkrel 0.RC8.1
 License: BSD
 Group: Development/Other
 Epoch: 1
 Url: http://www.cmake.org/HTML/index.html
-Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-RC-5.tar.gz
+Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-RC-8.tar.gz
 Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
@@ -19,7 +19,7 @@ BuildRequires: chrpath
 BuildRequires: perl
 BuildRequires: ncurses-devel
 BuildRequires: idn-devel
-BuildRequires: libqt4-devel >= 4.4.0
+BuildRequires: qt4-devel >= 4.4.0
 Requires: rpm-manbo-setup >= 2-10
 
 %description
@@ -44,7 +44,7 @@ This is the Qt GUI.
 
 %prep
 
-%setup -q -n %name-%{version}-RC-5 
+%setup -q -n %name-%{version}-RC-8 
 %patch0
 %patch1
 
