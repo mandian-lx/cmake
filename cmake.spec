@@ -43,7 +43,6 @@ simple platform and compiler independent configuration files.
 This is the Qt GUI.
 
 %prep
-
 %setup -q -n %name-%{version}-RC-8 
 %patch0
 %patch1
@@ -88,6 +87,10 @@ install -m 644 %SOURCE1 %buildroot%_sysconfdir/rpm/macros.d/
 for name in Docs/ctest.1 Docs/cmake.1 Docs/ccmake.1 Docs/cmake-mode.el Docs/cmake-indent.vim Docs/cmake-syntax.vim; do
     rm -f ${name}
 done
+
+%check
+unset DISPLAY
+bin/ctest -V
 
 %clean
 rm -rf %buildroot
