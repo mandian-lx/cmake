@@ -21,7 +21,7 @@ BuildRequires: ncurses-devel
 BuildRequires: libcurl-devel
 BuildRequires: idn-devel
 BuildRequires: zlib-devel
-BuildRequires: xmlrpc-c-devel
+BuildRequires: libxmlrpc-c-devel
 BuildRequires: qt4-devel >= 4.4.0
 Conflicts: vim-common < 7.2.079-4
 Requires: rpm-manbo-setup >= 2-10
