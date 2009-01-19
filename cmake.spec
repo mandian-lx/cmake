@@ -3,7 +3,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.3
-Release: %mkrel 0.RC8.1
+Release: %mkrel 0.RC8.2
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -18,8 +18,12 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: chrpath
 BuildRequires: perl
 BuildRequires: ncurses-devel
+BuildRequires: libcurl-devel
 BuildRequires: idn-devel
+BuildRequires: zlib-devel
+BuildRequires: xmlrpc-c-devel
 BuildRequires: qt4-devel >= 4.4.0
+Conflicts: vim-common < 7.2.079-4
 Requires: rpm-manbo-setup >= 2-10
 
 %description
@@ -31,6 +35,23 @@ sophisticated: it is possible to support complex environments
 requiring system configuration, pre-processor generation, code
 generation, and template instantiation.
 
+%files
+%defattr(-,root,root)
+%_bindir/cmake
+%_bindir/ccmake
+%_bindir/ctest
+%_bindir/cpack
+%_mandir/man1/*
+%_datadir/cmake-%shortVersion/
+%_sysconfdir/emacs/site-start.d/%{name}.el
+%_sysconfdir/rpm/macros.d/*
+%_datadir/emacs/site-lisp/cmake-mode.el
+%_datadir/vim/*/*
+%doc CMakeLogo.gif ChangeLog.txt Docs/* Example
+%exclude %_prefix/doc
+
+#-----------------------------------------------------------------------------
+
 %package -n %{name}-qtgui
 Summary:    Qt GUI Dialog for CMake - the Cross-platform, open-source make system
 Group:      Development/Other
@@ -41,6 +62,14 @@ CMake is used to control the software compilation process using
 simple platform and compiler independent configuration files.
 
 This is the Qt GUI.
+
+%files -n %{name}-qtgui
+%_bindir/cmake-gui
+%_datadir/applications/CMake.desktop
+%_datadir/mime/packages/cmakecache.xml
+%_datadir/pixmaps/CMakeSetup.png
+
+#-----------------------------------------------------------------------------
 
 %prep
 %setup -q -n %name-%{version}-RC-8 
@@ -59,8 +88,10 @@ perl -pi -e 's@^\s+/usr/X11R6/.*\n@@' Modules/*.cmake
 %build
 %setup_compile_flags
 ./configure \
-	--prefix=%{_prefix} \
-	--mandir=/share/man \
+    --system-libs \
+    --parallel=%_smp_mflags \
+    --prefix=%{_prefix} \
+    --mandir=/share/man \
     --qt-gui
 
 %make
@@ -82,8 +113,16 @@ cat <<EOF >%buildroot%_sysconfdir/emacs/site-start.d/%{name}.el
               auto-mode-alist))
 EOF
 
+# cmake mode for vim
+install -d %buildroot%_datadir/vim/syntax
+install -d %buildroot%_datadir/vim/indent
+install -m644 Docs/cmake-syntax.vim %buildroot%_datadir/vim/syntax/cmake.vim
+install -m644 Docs/cmake-indent.vim %buildroot%_datadir/vim/indent/cmake.vim
+
+# RPM macros
 install -d -m 755 %buildroot%_sysconfdir/rpm/macros.d/
 install -m 644 %SOURCE1 %buildroot%_sysconfdir/rpm/macros.d/
+
 for name in Docs/ctest.1 Docs/cmake.1 Docs/ccmake.1 Docs/cmake-mode.el Docs/cmake-indent.vim Docs/cmake-syntax.vim; do
     rm -f ${name}
 done
@@ -95,24 +134,4 @@ bin/ctest -V
 %clean
 rm -rf %buildroot
 
-%files
-%defattr(-,root,root)
-%_bindir/cmake
-%_bindir/ccmake
-%_bindir/ctest
-%_bindir/cpack
-%_mandir/man1/*
-%_datadir/cmake-%shortVersion/
-%_sysconfdir/emacs/site-start.d/%{name}.el
-%_sysconfdir/rpm/macros.d/*
-%_datadir/emacs/site-lisp/cmake-mode.el
-%doc CMakeLogo.gif ChangeLog.txt Docs/* Example
-%exclude %_prefix/doc
-
-
-%files -n %{name}-qtgui
-%_bindir/cmake-gui
-%_datadir/applications/CMake.desktop
-%_datadir/mime/packages/cmakecache.xml
-%_datadir/pixmaps/CMakeSetup.png
 
