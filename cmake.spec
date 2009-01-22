@@ -8,12 +8,13 @@ License: BSD
 Group: Development/Other
 Epoch: 1
 Url: http://www.cmake.org/HTML/index.html
-Source: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-RC-8.tar.gz
+Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-RC-8.tar.gz
 Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
+Patch2: cmake-2.6.3-RC-8-xz-support.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: chrpath
 BuildRequires: perl
@@ -76,6 +77,7 @@ This is the Qt GUI.
 %setup -q -n %name-%{version}-RC-8 
 %patch0
 %patch1
+%patch2 -p1 -b .xz~
 
 %if "%{_lib}" != "lib"
 perl -pi -e 's#usr/lib#usr/lib64#' `find -type f`
