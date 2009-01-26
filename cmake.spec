@@ -49,8 +49,7 @@ generation, and template instantiation.
 %_sysconfdir/rpm/macros.d/*
 %_datadir/emacs/site-lisp/cmake-mode.el
 %_datadir/vim/*/*
-%doc CMakeLogo.gif ChangeLog.txt Docs/* Example
-%exclude %_prefix/doc
+%doc CMakeLogo.gif ChangeLog.txt Example mydocs/*
 
 #-----------------------------------------------------------------------------
 
@@ -89,23 +88,27 @@ perl -pi -e 's#/usr/X11R6/lib#/usr/X11R6/lib64#' `find -type f`
 perl -pi -e 's@^\s+/usr/X11R6/.*\n@@' Modules/*.cmake
 
 %build
+mkdir -p build
+cd build
 %setup_compile_flags
-./configure \
+../configure \
     --system-libs \
     --parallel=%_smp_mflags \
     --prefix=%{_prefix} \
     --mandir=/share/man \
+    --docdir=/share/doc/%{name} \
     --qt-gui
 
 %make
 
 %install
 rm -rf %buildroot
-make install DESTDIR=%buildroot
+pushd build
+%makeinstall_std
+popd
 
 # cmake mode for emacs
-install -d %buildroot%_datadir/emacs/site-lisp/
-install -m644 Docs/cmake-mode.el %buildroot%_datadir/emacs/site-lisp/
+install -m644 Docs/cmake-mode.el -D %buildroot%_datadir/emacs/site-lisp/cmake-mode.el
 install -d %buildroot%_sysconfdir/emacs/site-start.d
 cat <<EOF >%buildroot%_sysconfdir/emacs/site-start.d/%{name}.el
 (setq load-path (cons (expand-file-name "/dir/with/cmake-mode") load-path))
@@ -117,24 +120,21 @@ cat <<EOF >%buildroot%_sysconfdir/emacs/site-start.d/%{name}.el
 EOF
 
 # cmake mode for vim
-install -d %buildroot%_datadir/vim/syntax
-install -d %buildroot%_datadir/vim/indent
-install -m644 Docs/cmake-syntax.vim %buildroot%_datadir/vim/syntax/cmake.vim
-install -m644 Docs/cmake-indent.vim %buildroot%_datadir/vim/indent/cmake.vim
+install -m644 Docs/cmake-syntax.vim -D %buildroot%_datadir/vim/syntax/cmake.vim
+install -m644 Docs/cmake-indent.vim -D %buildroot%_datadir/vim/indent/cmake.vim
 
 # RPM macros
-install -d -m 755 %buildroot%_sysconfdir/rpm/macros.d/
-install -m 644 %SOURCE1 %buildroot%_sysconfdir/rpm/macros.d/
+install -m644 %SOURCE1 -D %buildroot%_sysconfdir/rpm/macros.d/cmake.macros
 
-for name in Docs/ctest.1 Docs/cmake.1 Docs/ccmake.1 Docs/cmake-mode.el Docs/cmake-indent.vim Docs/cmake-syntax.vim; do
-    rm -f ${name}
-done
+# %doc wipes out files in doc dir, fixed in cooker svn for rpm package, though
+# not submitted yet, so we'll just work around this by moving it for now..
+rm -rf mydocs
+mv %buildroot%_datadir/doc/%{name} mydocs
 
 %check
 unset DISPLAY
+cd build
 bin/ctest -V
 
 %clean
 rm -rf %buildroot
-
-
