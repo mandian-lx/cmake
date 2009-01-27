@@ -16,7 +16,6 @@ Patch0: cmake-vtk-5.0.patch
 Patch1: cmake-fltk-path.patch
 Patch2: cmake-2.6.3-RC-8-xz-support.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-BuildRequires: chrpath
 BuildRequires: perl
 BuildRequires: ncurses-devel
 BuildRequires: libcurl-devel
