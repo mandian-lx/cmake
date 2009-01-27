@@ -99,7 +99,7 @@ cd build
     --docdir=/share/doc/%{name} \
     --qt-gui
 
-%make
+%make VERBOSE=1
 
 %install
 rm -rf %buildroot
