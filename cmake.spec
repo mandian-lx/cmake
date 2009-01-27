@@ -15,7 +15,6 @@ Patch0: cmake-vtk-5.0.patch
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
 Patch2: cmake-2.6.3-RC-8-xz-support.patch
-Patch3: cmake-2.6.3-RC-8-progress-color.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: perl
 BuildRequires: ncurses-devel
@@ -77,7 +76,6 @@ This is the Qt GUI.
 %patch0
 %patch1
 %patch2 -p1 -b .xz~
-%patch3 -p1 -b .progcolor~
 
 # Don't try to automagically find files in /usr/X11R6
 # But also don't change a prefix if it is not /usr
@@ -94,8 +92,6 @@ cd build
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
     --qt-gui
-
-%make VERBOSE=1
 
 %install
 rm -rf %buildroot
