@@ -3,18 +3,18 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.3
-Release: %mkrel 0.RC8.3
+Release: %mkrel 0.RC13.1
 License: BSD
 Group: Development/Other
 Epoch: 1
 Url: http://www.cmake.org/HTML/index.html
-Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-RC-8.tar.gz
+Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-RC-13.tar.gz
 Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
-Patch2: cmake-2.6.3-RC-8-xz-support.patch
+Patch2: cmake-2.6.3-RC-13-xz-support.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: perl
 BuildRequires: ncurses-devel
@@ -72,7 +72,7 @@ This is the Qt GUI.
 #-----------------------------------------------------------------------------
 
 %prep
-%setup -q -n %name-%{version}-RC-8 
+%setup -q -n %name-%{version}-RC-13 
 %patch0
 %patch1
 %patch2 -p1 -b .xz~
