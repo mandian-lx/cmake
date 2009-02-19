@@ -43,7 +43,7 @@ generation, and template instantiation.
 %_bindir/ctest
 %_bindir/cpack
 %_mandir/man1/*
-%_datadir/cmake-%shortVersion/
+%_datadir/%{name}
 %_sysconfdir/emacs/site-start.d/%{name}.el
 %_sysconfdir/rpm/macros.d/*
 %_datadir/emacs/site-lisp/cmake-mode.el
@@ -89,6 +89,7 @@ cd build
     --system-libs \
     --parallel=%_smp_mflags \
     --prefix=%{_prefix} \
+    --datadir=/share/%{name} \
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
     --qt-gui
