@@ -24,6 +24,7 @@ BuildRequires: zlib-devel
 BuildRequires: libxmlrpc-c-devel
 BuildRequires: expat-devel
 BuildRequires: qt4-devel >= 4.4.0
+BuildRequires: gcc-gfortran
 Conflicts: vim-common < 7.2.079-4
 Requires: rpm-manbo-setup >= 2-10
 
