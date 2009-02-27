@@ -99,6 +99,8 @@ cd build
     --docdir=/share/doc/%{name} \
     --qt-gui
 
+%make
+
 %install
 rm -rf %buildroot
 pushd build
