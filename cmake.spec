@@ -3,7 +3,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.3
-Release: %mkrel 1
+Release: %mkrel 2
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -25,7 +25,9 @@ BuildRequires: libxmlrpc-c-devel
 BuildRequires: expat-devel
 BuildRequires: qt4-devel >= 4.4.0
 BuildRequires: gcc-gfortran
+%if %mdkversion > 200900
 Conflicts: vim-common < 7.2.079-4
+%endif
 Requires: rpm-manbo-setup >= 2-10
 
 %description
@@ -48,7 +50,9 @@ generation, and template instantiation.
 %_sysconfdir/emacs/site-start.d/%{name}.el
 %_sysconfdir/rpm/macros.d/*
 %_datadir/emacs/site-lisp/cmake-mode.el
+%if %mdkversion > 200900
 %_datadir/vim/*/*
+%endif
 %doc CMakeLogo.gif ChangeLog.txt Example mydocs/*
 
 #-----------------------------------------------------------------------------
@@ -113,9 +117,11 @@ cat <<EOF >%buildroot%_sysconfdir/emacs/site-start.d/%{name}.el
               auto-mode-alist))
 EOF
 
+%if %mdkversion > 200900
 # cmake mode for vim
 install -m644 Docs/cmake-syntax.vim -D %buildroot%_datadir/vim/syntax/cmake.vim
 install -m644 Docs/cmake-indent.vim -D %buildroot%_datadir/vim/indent/cmake.vim
+%endif
 
 # RPM macros
 install -m644 %SOURCE1 -D %buildroot%_sysconfdir/rpm/macros.d/cmake.macros
