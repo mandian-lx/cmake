@@ -1,5 +1,9 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
+%define bootstrap 0
+%{?_without_bootstrap: %global bootstrap 0}
+%{?_with_bootstrap: %global bootstrap 1}
+
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.4
@@ -23,7 +27,9 @@ BuildRequires: idn-devel
 BuildRequires: zlib-devel
 BuildRequires: libxmlrpc-c-devel
 BuildRequires: expat-devel
+%if !%bootstrap
 BuildRequires: qt4-devel >= 4.4.0
+%endif
 BuildRequires: gcc-gfortran
 %if %mdkversion > 200900
 Conflicts: vim-common < 7.2.079-4
@@ -57,6 +63,7 @@ generation, and template instantiation.
 
 #-----------------------------------------------------------------------------
 
+%if !%bootstrap
 %package -n %{name}-qtgui
 Summary:    Qt GUI Dialog for CMake - the Cross-platform, open-source make system
 Group:      Development/Other
@@ -73,6 +80,7 @@ This is the Qt GUI.
 %_datadir/applications/CMake.desktop
 %_datadir/mime/packages/cmakecache.xml
 %_datadir/pixmaps/CMakeSetup.png
+%endif
 
 #-----------------------------------------------------------------------------
 
@@ -97,7 +105,9 @@ cd build
     --datadir=/share/%{name} \
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
+%if !%bootstrap
     --qt-gui
+%endif
 
 %make
 
