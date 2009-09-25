@@ -7,7 +7,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.6.4
-Release: %mkrel 3
+Release: %mkrel 4
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -93,6 +93,11 @@ This is the Qt GUI.
 # Don't try to automagically find files in /usr/X11R6
 # But also don't change a prefix if it is not /usr
 perl -pi -e 's@^\s+/usr/X11R6/.*\n@@' Modules/*.cmake
+
+%ifarch %arm
+# bootstrap test is taking ages on arm
+sed -i -e 's!SET(CMAKE_LONG_TEST_TIMEOUT 1500)!SET(CMAKE_LONG_TEST_TIMEOUT 7200)!g' Tests/CMakeLists.txt
+%endif
 
 %build
 mkdir -p build
