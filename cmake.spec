@@ -4,13 +4,13 @@
 
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.6.4
-Release: %mkrel 7
+Version: 2.8.0
+Release: %mkrel 1
 License: BSD
 Group: Development/Other
 Epoch: 1
 Url: http://www.cmake.org/HTML/index.html
-Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.gz
+Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-rc1.tar.gz
 Source1: cmake.macros
 # fix vtk 5.0 detection
 Patch0: cmake-vtk-5.0.patch
@@ -83,7 +83,7 @@ This is the Qt GUI.
 #-----------------------------------------------------------------------------
 
 %prep
-%setup -q -n %name-%{version}
+%setup -q -n %name-%{version}-rc1
 %patch0
 %patch1
 %patch2 -p1 -b .xz
