@@ -23,7 +23,6 @@ BuildRequires: ncurses-devel
 BuildRequires: libcurl-devel
 BuildRequires: idn-devel
 BuildRequires: zlib-devel
-BuildRequires: libxmlrpc-c-devel
 BuildRequires: expat-devel
 %if ! %with bootstrap
 BuildRequires: qt4-devel >= 4.4.0
