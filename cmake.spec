@@ -16,7 +16,7 @@ Source1: cmake.macros
 Patch0: cmake-vtk-5.0.patch
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
-Patch2: cmake-2.6.3-RC-13-xz-support.patch
+Patch2: cmake-2.8.0-xz-support.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: perl
 BuildRequires: ncurses-devel
