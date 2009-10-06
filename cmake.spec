@@ -5,7 +5,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.8.0
-Release: %mkrel 2
+Release: %mkrel 3
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -56,7 +56,7 @@ generation, and template instantiation.
 %if %mdkversion > 200900
 %_datadir/vim/*/*
 %endif
-%doc CMakeLogo.gif ChangeLog.txt Example mydocs/*
+%doc CMakeLogo.gif Example mydocs/*
 
 #-----------------------------------------------------------------------------
 
