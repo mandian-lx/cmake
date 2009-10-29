@@ -5,12 +5,12 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.8.0
-Release: %mkrel 5
+Release: %mkrel 6
 License: BSD
 Group: Development/Other
 Epoch: 1
 Url: http://www.cmake.org/HTML/index.html
-Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-rc3.tar.gz
+Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-rc4.tar.gz
 Source1: cmake.macros
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
@@ -80,7 +80,7 @@ This is the Qt GUI.
 #-----------------------------------------------------------------------------
 
 %prep
-%setup -q -n %name-%{version}-rc3
+%setup -q -n %name-%{version}-rc4
 %patch1
 %patch2 -p1 -b .xz
 
