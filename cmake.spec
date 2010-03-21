@@ -4,8 +4,8 @@
 
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.8.0
-Release: %mkrel 9
+Version: 2.8.1
+Release: %mkrel 1
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -21,6 +21,7 @@ BuildRequires: ncurses-devel
 BuildRequires: libcurl-devel
 BuildRequires: idn-devel
 BuildRequires: zlib-devel
+BuildRequires: xz
 BuildRequires: expat-devel
 %if ! %with bootstrap
 BuildRequires: qt4-devel >= 4.4.0
