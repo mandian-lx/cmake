@@ -4,7 +4,7 @@
 
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.8.1
+Version: 2.8.2
 Release: %mkrel 1
 License: BSD
 Group: Development/Other
@@ -14,7 +14,7 @@ Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.gz
 Source1: cmake.macros
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
-Patch2: cmake-2.8.0-xz-support.patch
+Patch2: cmake-2.8.2-xz-support.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: perl
 BuildRequires: ncurses-devel
