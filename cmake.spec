@@ -24,6 +24,8 @@ BuildRequires: idn-devel
 BuildRequires: zlib-devel
 BuildRequires: xz
 BuildRequires: expat-devel
+BuildRequires: bzip2-devel
+BuildRequires: libarchive-devel
 %if ! %with bootstrap
 BuildRequires: qt4-devel >= 4.4.0
 %endif
