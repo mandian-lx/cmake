@@ -4,7 +4,7 @@
 
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.8.3
+Version: 2.8.4
 Release: %mkrel 1
 License: BSD
 Group: Development/Other
@@ -15,7 +15,6 @@ Source1: cmake.macros
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
 Patch2: cmake-2.8.2-xz-support.patch
-Patch3: cmake-2.8.2-py27.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: perl
 BuildRequires: ncurses-devel
@@ -87,7 +86,6 @@ This is the Qt GUI.
 %setup -q -n %name-%{version}
 %patch1
 #%patch2 -p1 -b .xz
-#%patch3 -p1 -b .py27
 
 # Don't try to automagically find files in /usr/X11R6
 # But also don't change a prefix if it is not /usr
