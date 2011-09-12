@@ -1,16 +1,14 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
-%bcond_with bootstrap
-
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.8.4
-Release: 3
+Version: 2.8.6
+Release: 0.rc3.1
 License: BSD
 Group: Development/Other
 Epoch: 1
 Url: http://www.cmake.org/HTML/index.html
-Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}.tar.gz
+Source0: http://www.cmake.org/files/v%{shortVersion}/%name-%{version}-rc3.tar.gz
 Source1: cmake.macros
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
@@ -25,13 +23,8 @@ BuildRequires: xz
 BuildRequires: expat-devel
 BuildRequires: bzip2-devel
 BuildRequires: libarchive-devel
-%if ! %with bootstrap
 BuildRequires: qt4-devel >= 4.4.0
-%endif
 BuildRequires: gcc-gfortran
-%if %mdkversion > 200900
-Conflicts: vim-common < 7.2.079-4
-%endif
 Requires: rpm-manbo-setup >= 2-10
 
 %description
@@ -107,9 +100,7 @@ cd build
     --datadir=/share/%{name} \
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
-%if ! %with bootstrap
     --qt-gui
-%endif
 
 %make
 
@@ -131,11 +122,9 @@ cat <<EOF >%buildroot%_sysconfdir/emacs/site-start.d/%{name}.el
               auto-mode-alist))
 EOF
 
-%if %mdkversion > 200900
 # cmake mode for vim
 install -m644 Docs/cmake-syntax.vim -D %buildroot%_datadir/vim/syntax/cmake.vim
 install -m644 Docs/cmake-indent.vim -D %buildroot%_datadir/vim/indent/cmake.vim
-%endif
 
 # RPM macros
 install -m644 %SOURCE1 -D %buildroot%_sysconfdir/rpm/macros.d/cmake.macros
