@@ -26,7 +26,7 @@ BuildRequires: bzip2-devel
 BuildRequires: libarchive-devel
 %if %qt4
 BuildRequires: qt4-devel >= 4.4.0
-%fi
+%endif
 BuildRequires: gcc-gfortran
 Requires: rpm-manbo-setup >= 2-10
 
@@ -105,7 +105,7 @@ cd build
     --docdir=/share/doc/%{name} \
 %if %qt4
     --qt-gui
-%fi
+%endif
 
 %make
 
