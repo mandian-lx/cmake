@@ -53,6 +53,7 @@ generation, and template instantiation.
 %if %mdkversion > 200900
 %_datadir/vim/*/*
 %endif
+%_datadir/aclocal/cmake.m4
 %doc CMakeLogo.gif Example mydocs/*
 
 #-----------------------------------------------------------------------------
