@@ -1,5 +1,7 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
+%define qt4 0
+
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.8.6
@@ -13,7 +15,6 @@ Source1: cmake.macros
 # fix ftlk detection
 Patch1: cmake-fltk-path.patch
 Patch2: cmake-2.8.4-xz-support.patch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: perl
 BuildRequires: ncurses-devel
 BuildRequires: libcurl-devel
@@ -23,7 +24,9 @@ BuildRequires: xz
 BuildRequires: expat-devel
 BuildRequires: bzip2-devel
 BuildRequires: libarchive-devel
+%if %qt4
 BuildRequires: qt4-devel >= 4.4.0
+%fi
 BuildRequires: gcc-gfortran
 Requires: rpm-manbo-setup >= 2-10
 
@@ -54,7 +57,7 @@ generation, and template instantiation.
 
 #-----------------------------------------------------------------------------
 
-%if ! %with bootstrap
+%if %qt4
 %package -n %{name}-qtgui
 Summary:    Qt GUI Dialog for CMake - the Cross-platform, open-source make system
 Group:      Development/Other
@@ -100,7 +103,9 @@ cd build
     --datadir=/share/%{name} \
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
+%if %qt4
     --qt-gui
+%fi
 
 %make
 
