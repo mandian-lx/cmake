@@ -142,7 +142,5 @@ mv %buildroot%_datadir/doc/%{name} mydocs
 %check
 unset DISPLAY
 cd build
-bin/ctest -E SubDirSpaces -V %{_smp_mflags}
+#bin/ctest -E SubDirSpaces -V %{_smp_mflags}
 
-%clean
-rm -rf %buildroot
