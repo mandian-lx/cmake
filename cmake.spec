@@ -80,7 +80,7 @@ This is the Qt GUI.
 #-----------------------------------------------------------------------------
 
 %prep
-%setup -q -n %name-%{version}-rc3
+%setup -q -n %name-%{version}-rc4
 %patch1
 %patch2 -p1 -b .xz~
 
