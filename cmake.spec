@@ -5,7 +5,7 @@
 Name: cmake
 Summary: Cross-platform, open-source make system
 Version: 2.8.6
-Release: 3
+Release: 4
 License: BSD
 Group: Development/Other
 Epoch: 1
@@ -143,4 +143,3 @@ mv %buildroot%_datadir/doc/%{name} mydocs
 unset DISPLAY
 cd build
 #bin/ctest -E SubDirSpaces -V %{_smp_mflags}
-
