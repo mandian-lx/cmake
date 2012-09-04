@@ -4,7 +4,7 @@
 
 Name: cmake
 Summary: Cross-platform, open-source make system
-Version: 2.8.7
+Version: 2.8.9
 Release: 1
 License: BSD
 Group: Development/Other
