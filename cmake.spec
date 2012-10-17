@@ -16,7 +16,7 @@ Source1:	cmake.macros
 Patch1:		cmake-2.8.9-fltk-path.patch
 Patch2:		cmake-2.8.9-xz-support.patch
 BuildRequires:	perl
-BuildRequires:	pkgconfig(ncurses)
+BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	idn-devel
 BuildRequires:	zlib-devel
