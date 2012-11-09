@@ -1,0 +1,273 @@
+diff -urN cmake-2.8.9/Modules/CPack.cmake cmake-2.8.9-patched/Modules/CPack.cmake
+--- cmake-2.8.9/Modules/CPack.cmake	2012-08-10 05:15:19.000000000 +1100
++++ cmake-2.8.9-patched/Modules/CPack.cmake	2012-09-05 22:20:50.938508000 +1100
+@@ -432,6 +432,7 @@
+       option(CPACK_BINARY_STGZ "Enable to build STGZ packages"    ON)
+       option(CPACK_BINARY_TGZ  "Enable to build TGZ packages"     ON)
+       option(CPACK_BINARY_TBZ2 "Enable to build TBZ2 packages"    OFF)
++      option(CPACK_BINARY_TXZ  "Enable to build TXZ packages"     OFF)
+       option(CPACK_BINARY_DEB  "Enable to build Debian packages"  OFF)
+       option(CPACK_BINARY_RPM  "Enable to build RPM packages"     OFF)
+       option(CPACK_BINARY_NSIS "Enable to build NSIS packages"    OFF)
+@@ -452,6 +453,7 @@
+   cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_STGZ         STGZ)
+   cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_TGZ          TGZ)
+   cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_TBZ2         TBZ2)
++  cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_TXZ          TXZ)
+   cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_TZ           TZ)
+   cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_ZIP          ZIP)
+   
+@@ -465,6 +467,7 @@
+     else(CYGWIN)
+       option(CPACK_SOURCE_TBZ2 "Enable to build TBZ2 source packages" ON)
+       option(CPACK_SOURCE_TGZ  "Enable to build TGZ source packages"  ON)
++      option(CPACK_SOURCE_TXZ  "Enable to build TXZ source packages"  ON)
+       option(CPACK_SOURCE_TZ   "Enable to build TZ source packages"   ON)
+       option(CPACK_SOURCE_ZIP  "Enable to build ZIP source packages"  OFF)
+     endif(CYGWIN)
+@@ -475,6 +478,7 @@
+   cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_CYGWIN  CygwinSource)
+   cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_TGZ     TGZ)
+   cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_TBZ2    TBZ2)
++  cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_TXZ     TXZ)
+   cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_TZ      TZ)
+   cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_ZIP     ZIP)
+ endif(NOT CPACK_SOURCE_GENERATOR)
+@@ -485,7 +489,7 @@
+                  CPACK_BINARY_DEB    CPACK_BINARY_RPM          CPACK_BINARY_TZ     
+                  CPACK_BINARY_NSIS CPACK_BINARY_ZIP CPACK_BINARY_BUNDLE
+                  CPACK_SOURCE_CYGWIN CPACK_SOURCE_TBZ2 CPACK_SOURCE_TGZ 
+-                 CPACK_SOURCE_TZ CPACK_SOURCE_ZIP CPACK_BINARY_DRAGNDROP)
++                 CPACK_SOURCE_TXZ CPACK_SOURCE_TZ CPACK_SOURCE_ZIP CPACK_BINARY_DRAGNDROP)
+ 
+ # Set some other variables
+ cpack_set_if_not_set(CPACK_INSTALL_CMAKE_PROJECTS
+diff -urN cmake-2.8.9/Modules/FindLibLZMA.cmake cmake-2.8.9-patched/Modules/FindLibLZMA.cmake
+--- cmake-2.8.9/Modules/FindLibLZMA.cmake	2012-08-10 05:15:19.000000000 +1100
++++ cmake-2.8.9-patched/Modules/FindLibLZMA.cmake	2012-09-05 22:20:50.946508000 +1100
+@@ -2,6 +2,55 @@
+ # Find LibLZMA headers and library
+ #
+ #  LIBLZMA_FOUND             - True if liblzma is found.
++#  LIBLZMA_INCLUDE_DIR       - Directory where liblzma headers are located.
++#  LIBLZMA_LIBRARIES         - Lzma libraries to link against.
++#  LIBLZMA_HAS_AUTO_DECODER  - True if lzma_auto_decoder() is found (required).
++#  LIBLZMA_HAS_EASY_ENCODER  - True if lzma_easy_encoder() is found (required).
++#  LIBLZMA_HAS_LZMA_PRESET   - True if lzma_lzma_preset() is found (required).
++
++
++#=============================================================================
++# Copyright 2008-2009 Per Øyvind Karlsen <peroyvind@mandriva.org>
++#
++# Distributed under the OSI-approved BSD License (the "License");
++# see accompanying file Copyright.txt for details.
++#
++# This software is distributed WITHOUT ANY WARRANTY; without even the
++# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++# See the License for more information.
++#=============================================================================
++# (To distributed this file outside of CMake, substitute the full
++#  License text for the above reference.)
++
++IF (LIBLZMA_INCLUDE_DIRS AND LIBLZMA_LIBRARIES)
++    SET(LIBLZMA_FIND_QUIETLY TRUE)
++ENDIF (LIBLZMA_INCLUDE_DIRS AND LIBLZMA_LIBRARIES)
++
++IF (NOT WIN32)
++   INCLUDE(FindPkgConfig)
++   PKG_SEARCH_MODULE(LIBLZMA liblzma)
++   ELSE (NOT WIN32)
++       FIND_PATH(LIBLZMA_INCLUDE_DIRS lzma.h )
++       FIND_LIBRARY(LIBLZMA_LIBRARIES NAMES lzma )
++       INCLUDE(FindPackageHandleStandardArgs)
++       FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBLZMA DEFAULT_MSG LIBLZMA_INCLUDE_DIRS LIBLZMA_LIBRARIES)
++ENDIF (NOT WIN32)
++
++IF (LIBLZMA_FOUND)
++   INCLUDE(CheckLibraryExists)
++   CHECK_LIBRARY_EXISTS(${LIBLZMA_LIBRARIES} lzma_auto_decoder "" LIBLZMA_HAS_AUTO_DECODER)
++   CHECK_LIBRARY_EXISTS(${LIBLZMA_LIBRARIES} lzma_easy_encoder "" LIBLZMA_HAS_EASY_ENCODER)
++   CHECK_LIBRARY_EXISTS(${LIBLZMA_LIBRARIES} lzma_lzma_preset "" LIBLZMA_HAS_LZMA_PRESET)
++   IF (NOT LIBLZMA_HAS_AUTO_DECODER AND LIBLZMA_HAS_EASY_ENCODER AND LIBLZMA_HAS_LZMA_PRESET)
++      SET(LIBLZMA_FOUND FALSE)
++   ENDIF(NOT LIBLZMA_HAS_AUTO_DECODER AND LIBLZMA_HAS_EASY_ENCODER AND LIBLZMA_HAS_LZMA_PRESET)
++ENDIF (LIBLZMA_FOUND)
++
++MARK_AS_ADVANCED( LIBLZMA_INCLUDE_DIRS LIBLZMA_LIBRARIES )
++# - Find LibLZMA
++# Find LibLZMA headers and library
++#
++#  LIBLZMA_FOUND             - True if liblzma is found.
+ #  LIBLZMA_INCLUDE_DIRS      - Directory where liblzma headers are located.
+ #  LIBLZMA_LIBRARIES         - Lzma libraries to link against.
+ #  LIBLZMA_HAS_AUTO_DECODER  - True if lzma_auto_decoder() is found (required).
+diff -urN cmake-2.8.9/Source/CMakeLists.txt cmake-2.8.9-patched/Source/CMakeLists.txt
+--- cmake-2.8.9/Source/CMakeLists.txt	2012-08-10 05:15:19.000000000 +1100
++++ cmake-2.8.9-patched/Source/CMakeLists.txt	2012-09-05 22:20:50.946508000 +1100
+@@ -478,6 +478,7 @@
+   CPack/cmCPackTGZGenerator.cxx
+   CPack/cmCPackTarBZip2Generator.cxx
+   CPack/cmCPackTarCompressGenerator.cxx
++  CPack/cmCPackTarXZGenerator.cxx
+   CPack/cmCPackZIPGenerator.cxx
+   CPack/cmCPackDocumentVariables.cxx
+   CPack/cmCPackDocumentMacros.cxx
+diff -urN cmake-2.8.9/Source/CPack/cmCPackGeneratorFactory.cxx cmake-2.8.9-patched/Source/CPack/cmCPackGeneratorFactory.cxx
+--- cmake-2.8.9/Source/CPack/cmCPackGeneratorFactory.cxx	2012-08-10 05:15:19.000000000 +1100
++++ cmake-2.8.9-patched/Source/CPack/cmCPackGeneratorFactory.cxx	2012-09-05 22:25:46.341507898 +1100
+@@ -16,6 +16,7 @@
+ #include "cmCPackTGZGenerator.h"
+ #include "cmCPackTarBZip2Generator.h"
+ #include "cmCPackTarCompressGenerator.h"
++#include "cmCPackTarXZGenerator.h"
+ #include "cmCPackZIPGenerator.h"
+ #include "cmCPackSTGZGenerator.h"
+ #include "cmCPackNSISGenerator.h"
+@@ -85,6 +86,11 @@
+     this->RegisterGenerator("TBZ2", "Tar BZip2 compression",
+       cmCPackTarBZip2Generator::CreateGenerator);
+     }
++  if (cmCPackTarXZGenerator::CanGenerate())
++    {
++    this->RegisterGenerator("TXZ", "Tar XZ compression",
++      cmCPackTarXZGenerator::CreateGenerator);
++    }
+   if (cmCPackTarCompressGenerator::CanGenerate())
+     {
+     this->RegisterGenerator("TZ", "Tar Compress compression",
+diff -urN cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.cxx cmake-2.8.9-patched/Source/CPack/cmCPackTarXZGenerator.cxx
+--- cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.cxx	1970-01-01 10:00:00.000000000 +1000
++++ cmake-2.8.9-patched/Source/CPack/cmCPackTarXZGenerator.cxx	2012-09-05 22:20:50.953508000 +1100
+@@ -0,0 +1,31 @@
++/*=========================================================================
++
++  Program:   CMake - Cross-Platform Makefile Generator
++  Module:    $RCSfile: cmCPackTarXZGenerator.cxx,v $
++  Language:  C++
++  Date:      $Date: 2011-05-06 19:02:00 $
++  Version:   $Revision: 1.0 $
++
++  Copyright (c) 2002 Kitware, Inc., Insight Consortium.  All rights reserved.
++  See Copyright.txt or http://www.cmake.org/HTML/Copyright.html for details.
++
++     This software is distributed WITHOUT ANY WARRANTY; without even
++     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
++     PURPOSE.  See the above copyright notices for more information.
++
++=========================================================================*/
++
++#include "cmCPackTarXZGenerator.h"
++
++//----------------------------------------------------------------------
++cmCPackTarXZGenerator::cmCPackTarXZGenerator() 
++ :cmCPackArchiveGenerator(cmArchiveWrite::CompressXZ,
++                          cmArchiveWrite::TypeTAR)
++{
++}
++
++//----------------------------------------------------------------------
++cmCPackTarXZGenerator::~cmCPackTarXZGenerator()
++{
++}
++
+diff -urN cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.h cmake-2.8.9-patched/Source/CPack/cmCPackTarXZGenerator.h
+--- cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.h	1970-01-01 10:00:00.000000000 +1000
++++ cmake-2.8.9-patched/Source/CPack/cmCPackTarXZGenerator.h	2012-09-05 22:20:50.953508000 +1100
+@@ -0,0 +1,39 @@
++/*=========================================================================
++
++  Program:   CMake - Cross-Platform Makefile Generator
++  Module:    $RCSfile: cmCPackTarXZGenerator.h,v $
++  Language:  C++
++  Date:      $Date: 2007-02-02 19:40:26 $
++  Version:   $Revision: 1.2 $
++
++  Copyright (c) 2002 Kitware, Inc. All rights reserved.
++  See Copyright.txt or http://www.cmake.org/HTML/Copyright.html for details.
++
++     This software is distributed WITHOUT ANY WARRANTY; without even
++     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
++     PURPOSE.  See the above copyright notices for more information.
++
++=========================================================================*/
++
++#ifndef cmCPackTarXZGenerator_h
++#define cmCPackTarXZGenerator_h
++
++#include "cmCPackArchiveGenerator.h"
++
++/** \class cmCPackTarXZGenerator
++ * \brief A generator for TarXZ files
++ */
++class cmCPackTarXZGenerator : public cmCPackArchiveGenerator
++{
++public:
++  cmCPackTypeMacro(cmCPackTarXZGenerator, cmCPackArchiveGenerator);
++  /**
++   * Construct generator
++   */
++  cmCPackTarXZGenerator();
++  virtual ~cmCPackTarXZGenerator();
++protected:
++  virtual const char* GetOutputExtension() { return ".tar.xz"; }
++};
++
++#endif
+diff -urN cmake-2.8.9/Tests/CMakeTests/ModuleNoticesTest.cmake.in cmake-2.8.9-patched/Tests/CMakeTests/ModuleNoticesTest.cmake.in
+--- cmake-2.8.9/Tests/CMakeTests/ModuleNoticesTest.cmake.in	2012-08-10 05:15:19.000000000 +1100
++++ cmake-2.8.9-patched/Tests/CMakeTests/ModuleNoticesTest.cmake.in	2012-09-05 22:20:50.954508000 +1100
+@@ -22,6 +22,7 @@
+ # Modules that do not require our notice.
+ set(notice_exceptions
+   FindCUDA.cmake # MIT License, distributed here from upstream project
++  FindLibLZMA.cmake # Mandriva own patch, do not copyright by Kitware
+   )
+ 
+ # Load the list of modules to check.
+diff -urN cmake-2.8.9/Tests/SimpleInstall/CMakeLists.txt cmake-2.8.9-patched/Tests/SimpleInstall/CMakeLists.txt
+--- cmake-2.8.9/Tests/SimpleInstall/CMakeLists.txt	2012-08-10 05:15:19.000000000 +1100
++++ cmake-2.8.9-patched/Tests/SimpleInstall/CMakeLists.txt	2012-09-05 22:20:50.955508000 +1100
+@@ -359,6 +359,11 @@
+   IF(found_bz2)
+     SET(CPACK_GENERATOR "${CPACK_GENERATOR};TBZ2")
+   ENDIF(found_bz2)
++  FIND_PROGRAM(found_xz
++    NAMES xz)
++  IF(found_xz)
++    SET(CPACK_GENERATOR "${CPACK_GENERATOR};TXZ")
++  ENDIF(found_xz)
+ ENDIF(UNIX AND NOT APPLE)
+ 
+ SET(CPACK_PACKAGE_EXECUTABLES "SimpleInstall" "Simple Install")
+diff -urN cmake-2.8.9/Tests/SimpleInstallS2/CMakeLists.txt cmake-2.8.9-patched/Tests/SimpleInstallS2/CMakeLists.txt
+--- cmake-2.8.9/Tests/SimpleInstallS2/CMakeLists.txt	2012-08-10 05:15:19.000000000 +1100
++++ cmake-2.8.9-patched/Tests/SimpleInstallS2/CMakeLists.txt	2012-09-05 22:20:50.955508000 +1100
+@@ -359,6 +359,11 @@
+   IF(found_bz2)
+     SET(CPACK_GENERATOR "${CPACK_GENERATOR};TBZ2")
+   ENDIF(found_bz2)
++  FIND_PROGRAM(found_xz
++    NAMES xz)
++  IF(found_xz)
++    SET(CPACK_GENERATOR "${CPACK_GENERATOR};TXZ")
++  ENDIF(found_xz)
+ ENDIF(UNIX AND NOT APPLE)
+ 
+ SET(CPACK_PACKAGE_EXECUTABLES "SimpleInstall" "Simple Install")
+diff -urN cmake-2.8.9/Utilities/Release/release_cmake.cmake cmake-2.8.9-patched/Utilities/Release/release_cmake.cmake
+--- cmake-2.8.9/Utilities/Release/release_cmake.cmake	2012-08-10 05:15:19.000000000 +1100
++++ cmake-2.8.9-patched/Utilities/Release/release_cmake.cmake	2012-09-05 22:20:50.955508000 +1100
+@@ -100,6 +100,13 @@
+     set(SUFFIXES ${SUFFIXES} "*.tar.bz2")
+     set(extra_files setup.hint)
+   endif("${gen}" MATCHES "Cygwin")
++  if("${gen}" STREQUAL "TXZ")
++    set(SUFFIXES ${SUFFIXES} "*.tar.xz")
++  endif("${gen}" STREQUAL "TXZ")
++  if("${gen}" MATCHES "Cygwin")
++    set(SUFFIXES ${SUFFIXES} "*.tar.xz")
++    set(extra_files setup.hint)
++  endif("${gen}" MATCHES "Cygwin")
+   if("${gen}" STREQUAL "TZ")
+     set(SUFFIXES ${SUFFIXES} "*.tar.Z")
+   endif("${gen}" STREQUAL "TZ")
