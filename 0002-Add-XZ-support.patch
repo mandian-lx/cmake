@@ -1,7 +1,23 @@
-diff -urN cmake-2.8.9/Modules/CPack.cmake cmake-2.8.9-patched/Modules/CPack.cmake
---- cmake-2.8.9/Modules/CPack.cmake	2012-08-10 05:15:19.000000000 +1100
-+++ cmake-2.8.9-patched/Modules/CPack.cmake	2012-09-05 22:20:50.938508000 +1100
-@@ -432,6 +432,7 @@
+From 7b0a6cd244ad3a2822625ecb3fb016ac141aa04d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Nicolas=20L=C3=A9cureuil?= <neoclust.kde@free.fr>
+Date: Sat, 27 Oct 2012 02:17:18 +0200
+Subject: [PATCH 2/3] Add XZ support
+
+---
+ Modules/CPack.cmake                         | 6 +++++-
+ Source/CMakeLists.txt                       | 1 +
+ Source/CPack/cmCPackGeneratorFactory.cxx    | 6 ++++++
+ Tests/CMakeTests/ModuleNoticesTest.cmake.in | 1 +
+ Tests/SimpleInstall/CMakeLists.txt          | 5 +++++
+ Tests/SimpleInstallS2/CMakeLists.txt        | 5 +++++
+ Utilities/Release/release_cmake.cmake       | 3 +++
+ 7 files changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/Modules/CPack.cmake b/Modules/CPack.cmake
+index 6886ed9..f4623a1 100644
+--- a/Modules/CPack.cmake
++++ b/Modules/CPack.cmake
+@@ -432,6 +432,7 @@ if(NOT CPACK_GENERATOR)
        option(CPACK_BINARY_STGZ "Enable to build STGZ packages"    ON)
        option(CPACK_BINARY_TGZ  "Enable to build TGZ packages"     ON)
        option(CPACK_BINARY_TBZ2 "Enable to build TBZ2 packages"    OFF)
@@ -9,46 +25,143 @@ diff -urN cmake-2.8.9/Modules/CPack.cmake cmake-2.8.9-patched/Modules/CPack.cmak
        option(CPACK_BINARY_DEB  "Enable to build Debian packages"  OFF)
        option(CPACK_BINARY_RPM  "Enable to build RPM packages"     OFF)
        option(CPACK_BINARY_NSIS "Enable to build NSIS packages"    OFF)
-@@ -452,6 +453,7 @@
+@@ -452,6 +453,7 @@ if(NOT CPACK_GENERATOR)
    cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_STGZ         STGZ)
    cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_TGZ          TGZ)
    cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_TBZ2         TBZ2)
 +  cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_TXZ          TXZ)
    cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_TZ           TZ)
    cpack_optional_append(CPACK_GENERATOR  CPACK_BINARY_ZIP          ZIP)
-   
-@@ -465,6 +467,7 @@
-     else(CYGWIN)
+ 
+@@ -465,6 +467,7 @@ if(NOT CPACK_SOURCE_GENERATOR)
+     else()
        option(CPACK_SOURCE_TBZ2 "Enable to build TBZ2 source packages" ON)
        option(CPACK_SOURCE_TGZ  "Enable to build TGZ source packages"  ON)
 +      option(CPACK_SOURCE_TXZ  "Enable to build TXZ source packages"  ON)
        option(CPACK_SOURCE_TZ   "Enable to build TZ source packages"   ON)
        option(CPACK_SOURCE_ZIP  "Enable to build ZIP source packages"  OFF)
-     endif(CYGWIN)
-@@ -475,6 +478,7 @@
+     endif()
+@@ -475,6 +478,7 @@ if(NOT CPACK_SOURCE_GENERATOR)
    cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_CYGWIN  CygwinSource)
    cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_TGZ     TGZ)
    cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_TBZ2    TBZ2)
 +  cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_TXZ     TXZ)
    cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_TZ      TZ)
    cpack_optional_append(CPACK_SOURCE_GENERATOR  CPACK_SOURCE_ZIP     ZIP)
- endif(NOT CPACK_SOURCE_GENERATOR)
-@@ -485,7 +489,7 @@
-                  CPACK_BINARY_DEB    CPACK_BINARY_RPM          CPACK_BINARY_TZ     
+ endif()
+@@ -485,7 +489,7 @@ mark_as_advanced(CPACK_BINARY_CYGWIN CPACK_BINARY_PACKAGEMAKER CPACK_BINARY_OSXX
+                  CPACK_BINARY_DEB    CPACK_BINARY_RPM          CPACK_BINARY_TZ
                   CPACK_BINARY_NSIS CPACK_BINARY_ZIP CPACK_BINARY_BUNDLE
-                  CPACK_SOURCE_CYGWIN CPACK_SOURCE_TBZ2 CPACK_SOURCE_TGZ 
+                  CPACK_SOURCE_CYGWIN CPACK_SOURCE_TBZ2 CPACK_SOURCE_TGZ
 -                 CPACK_SOURCE_TZ CPACK_SOURCE_ZIP CPACK_BINARY_DRAGNDROP)
 +                 CPACK_SOURCE_TXZ CPACK_SOURCE_TZ CPACK_SOURCE_ZIP CPACK_BINARY_DRAGNDROP)
  
  # Set some other variables
  cpack_set_if_not_set(CPACK_INSTALL_CMAKE_PROJECTS
-diff -urN cmake-2.8.9/Modules/FindLibLZMA.cmake cmake-2.8.9-patched/Modules/FindLibLZMA.cmake
---- cmake-2.8.9/Modules/FindLibLZMA.cmake	2012-08-10 05:15:19.000000000 +1100
-+++ cmake-2.8.9-patched/Modules/FindLibLZMA.cmake	2012-09-05 22:20:50.946508000 +1100
-@@ -2,6 +2,55 @@
- # Find LibLZMA headers and library
- #
- #  LIBLZMA_FOUND             - True if liblzma is found.
+diff --git a/Source/CMakeLists.txt b/Source/CMakeLists.txt
+index 8bf6c40..96a06d8 100644
+--- a/Source/CMakeLists.txt
++++ b/Source/CMakeLists.txt
+@@ -491,6 +491,7 @@ set(CPACK_SRCS
+   CPack/cmCPackTGZGenerator.cxx
+   CPack/cmCPackTarBZip2Generator.cxx
+   CPack/cmCPackTarCompressGenerator.cxx
++  CPack/cmCPackTarXZGenerator.cxx
+   CPack/cmCPackZIPGenerator.cxx
+   CPack/cmCPackDocumentVariables.cxx
+   CPack/cmCPackDocumentMacros.cxx
+diff --git a/Source/CPack/cmCPackGeneratorFactory.cxx b/Source/CPack/cmCPackGeneratorFactory.cxx
+index 37ff460..2d5e757 100644
+--- a/Source/CPack/cmCPackGeneratorFactory.cxx
++++ b/Source/CPack/cmCPackGeneratorFactory.cxx
+@@ -16,6 +16,7 @@
+ #include "cmCPackTGZGenerator.h"
+ #include "cmCPackTarBZip2Generator.h"
+ #include "cmCPackTarCompressGenerator.h"
++#include "cmCPackTarXZGenerator.h"
+ #include "cmCPackZIPGenerator.h"
+ #include "cmCPackSTGZGenerator.h"
+ #include "cmCPackNSISGenerator.h"
+@@ -85,6 +86,11 @@ cmCPackGeneratorFactory::cmCPackGeneratorFactory()
+     this->RegisterGenerator("TBZ2", "Tar BZip2 compression",
+       cmCPackTarBZip2Generator::CreateGenerator);
+     }
++  if (cmCPackTarXZGenerator::CanGenerate())
++    {
++  this->RegisterGenerator("TXZ", "Tar XZ compression",
++    cmCPackTarXZGenerator::CreateGenerator);
++    }
+   if (cmCPackTarCompressGenerator::CanGenerate())
+     {
+     this->RegisterGenerator("TZ", "Tar Compress compression",
+diff --git a/Tests/CMakeTests/ModuleNoticesTest.cmake.in b/Tests/CMakeTests/ModuleNoticesTest.cmake.in
+index 8ecebd3..1fd5a7f 100644
+--- a/Tests/CMakeTests/ModuleNoticesTest.cmake.in
++++ b/Tests/CMakeTests/ModuleNoticesTest.cmake.in
+@@ -22,6 +22,7 @@ string(REPLACE "\r\r" "\r" notice_regex "${notice_regex}")
+ # Modules that do not require our notice.
+ set(notice_exceptions
+   FindCUDA.cmake # MIT License, distributed here from upstream project
++  FindLibLZMA.cmake # Mandriva own patch, do not copyright by Kitware
+   )
+ 
+ # Load the list of modules to check.
+diff --git a/Tests/SimpleInstall/CMakeLists.txt b/Tests/SimpleInstall/CMakeLists.txt
+index 479d6ec..10cf7b2 100644
+--- a/Tests/SimpleInstall/CMakeLists.txt
++++ b/Tests/SimpleInstall/CMakeLists.txt
+@@ -359,6 +359,11 @@ if(UNIX AND NOT APPLE)
+   if(found_bz2)
+     set(CPACK_GENERATOR "${CPACK_GENERATOR};TBZ2")
+   endif()
++  find_program(found_xz
++    NAMES xz)
++  if(found_xz)
++    set(CPACK_GENERATOR "${CPACK_GENERATOR};TXZ")
++  endif()
+ endif()
+ 
+ set(CPACK_PACKAGE_EXECUTABLES "SimpleInstall" "Simple Install")
+diff --git a/Tests/SimpleInstallS2/CMakeLists.txt b/Tests/SimpleInstallS2/CMakeLists.txt
+index 479d6ec..10cf7b2 100644
+--- a/Tests/SimpleInstallS2/CMakeLists.txt
++++ b/Tests/SimpleInstallS2/CMakeLists.txt
+@@ -359,6 +359,11 @@ if(UNIX AND NOT APPLE)
+   if(found_bz2)
+     set(CPACK_GENERATOR "${CPACK_GENERATOR};TBZ2")
+   endif()
++  find_program(found_xz
++    NAMES xz)
++  if(found_xz)
++    set(CPACK_GENERATOR "${CPACK_GENERATOR};TXZ")
++  endif()
+ endif()
+ 
+ set(CPACK_PACKAGE_EXECUTABLES "SimpleInstall" "Simple Install")
+diff --git a/Utilities/Release/release_cmake.cmake b/Utilities/Release/release_cmake.cmake
+index f351ac8..18f266d 100644
+--- a/Utilities/Release/release_cmake.cmake
++++ b/Utilities/Release/release_cmake.cmake
+@@ -100,6 +100,9 @@ foreach(gen ${generators})
+     set(SUFFIXES ${SUFFIXES} "*.tar.bz2")
+     set(extra_files setup.hint)
+   endif()
++  if("${gen}" STREQUAL "TXZ")
++    set(SUFFIXES ${SUFFIXES} "*.tar.xz")
++  endif()
+   if("${gen}" STREQUAL "TZ")
+     set(SUFFIXES ${SUFFIXES} "*.tar.Z")
+   endif()
+-- 
+1.8.0
+
+--- a/Modules/FindLibLZMA.cmake	2012-06-08 11:29:30.000000000 +0000
++++ b/Modules/FindLibLZMA.cmake	2012-06-08 11:29:30.000000000 +0000
+@@ -0,0 +1,49 @@
++# - Find LibLZMA
++# Find LibLZMA headers and library
++#
++#  LIBLZMA_FOUND             - True if liblzma is found.
 +#  LIBLZMA_INCLUDE_DIR       - Directory where liblzma headers are located.
 +#  LIBLZMA_LIBRARIES         - Lzma libraries to link against.
 +#  LIBLZMA_HAS_AUTO_DECODER  - True if lzma_auto_decoder() is found (required).
@@ -94,50 +207,8 @@ diff -urN cmake-2.8.9/Modules/FindLibLZMA.cmake cmake-2.8.9-patched/Modules/Find
 +ENDIF (LIBLZMA_FOUND)
 +
 +MARK_AS_ADVANCED( LIBLZMA_INCLUDE_DIRS LIBLZMA_LIBRARIES )
-+# - Find LibLZMA
-+# Find LibLZMA headers and library
-+#
-+#  LIBLZMA_FOUND             - True if liblzma is found.
- #  LIBLZMA_INCLUDE_DIRS      - Directory where liblzma headers are located.
- #  LIBLZMA_LIBRARIES         - Lzma libraries to link against.
- #  LIBLZMA_HAS_AUTO_DECODER  - True if lzma_auto_decoder() is found (required).
-diff -urN cmake-2.8.9/Source/CMakeLists.txt cmake-2.8.9-patched/Source/CMakeLists.txt
---- cmake-2.8.9/Source/CMakeLists.txt	2012-08-10 05:15:19.000000000 +1100
-+++ cmake-2.8.9-patched/Source/CMakeLists.txt	2012-09-05 22:20:50.946508000 +1100
-@@ -478,6 +478,7 @@
-   CPack/cmCPackTGZGenerator.cxx
-   CPack/cmCPackTarBZip2Generator.cxx
-   CPack/cmCPackTarCompressGenerator.cxx
-+  CPack/cmCPackTarXZGenerator.cxx
-   CPack/cmCPackZIPGenerator.cxx
-   CPack/cmCPackDocumentVariables.cxx
-   CPack/cmCPackDocumentMacros.cxx
-diff -urN cmake-2.8.9/Source/CPack/cmCPackGeneratorFactory.cxx cmake-2.8.9-patched/Source/CPack/cmCPackGeneratorFactory.cxx
---- cmake-2.8.9/Source/CPack/cmCPackGeneratorFactory.cxx	2012-08-10 05:15:19.000000000 +1100
-+++ cmake-2.8.9-patched/Source/CPack/cmCPackGeneratorFactory.cxx	2012-09-05 22:25:46.341507898 +1100
-@@ -16,6 +16,7 @@
- #include "cmCPackTGZGenerator.h"
- #include "cmCPackTarBZip2Generator.h"
- #include "cmCPackTarCompressGenerator.h"
-+#include "cmCPackTarXZGenerator.h"
- #include "cmCPackZIPGenerator.h"
- #include "cmCPackSTGZGenerator.h"
- #include "cmCPackNSISGenerator.h"
-@@ -85,6 +86,11 @@
-     this->RegisterGenerator("TBZ2", "Tar BZip2 compression",
-       cmCPackTarBZip2Generator::CreateGenerator);
-     }
-+  if (cmCPackTarXZGenerator::CanGenerate())
-+    {
-+    this->RegisterGenerator("TXZ", "Tar XZ compression",
-+      cmCPackTarXZGenerator::CreateGenerator);
-+    }
-   if (cmCPackTarCompressGenerator::CanGenerate())
-     {
-     this->RegisterGenerator("TZ", "Tar Compress compression",
-diff -urN cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.cxx cmake-2.8.9-patched/Source/CPack/cmCPackTarXZGenerator.cxx
---- cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.cxx	1970-01-01 10:00:00.000000000 +1000
-+++ cmake-2.8.9-patched/Source/CPack/cmCPackTarXZGenerator.cxx	2012-09-05 22:20:50.953508000 +1100
+--- a/Source/CPack/cmCPackTarXZGenerator.cxx	2012-06-08 11:29:30.000000000 +0000
++++ b/Source/CPack/cmCPackTarXZGenerator.cxx	2012-06-08 11:29:30.000000000 +0000
 @@ -0,0 +1,31 @@
 +/*=========================================================================
 +
@@ -170,9 +241,8 @@ diff -urN cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.cxx cmake-2.8.9-patched
 +{
 +}
 +
-diff -urN cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.h cmake-2.8.9-patched/Source/CPack/cmCPackTarXZGenerator.h
---- cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.h	1970-01-01 10:00:00.000000000 +1000
-+++ cmake-2.8.9-patched/Source/CPack/cmCPackTarXZGenerator.h	2012-09-05 22:20:50.953508000 +1100
+--- a/Source/CPack/cmCPackTarXZGenerator.h	2012-06-08 11:29:30.000000000 +0000
++++ b/Source/CPack/cmCPackTarXZGenerator.h	2012-06-08 11:29:30.000000000 +0000
 @@ -0,0 +1,39 @@
 +/*=========================================================================
 +
@@ -213,61 +283,3 @@ diff -urN cmake-2.8.9/Source/CPack/cmCPackTarXZGenerator.h cmake-2.8.9-patched/S
 +};
 +
 +#endif
-diff -urN cmake-2.8.9/Tests/CMakeTests/ModuleNoticesTest.cmake.in cmake-2.8.9-patched/Tests/CMakeTests/ModuleNoticesTest.cmake.in
---- cmake-2.8.9/Tests/CMakeTests/ModuleNoticesTest.cmake.in	2012-08-10 05:15:19.000000000 +1100
-+++ cmake-2.8.9-patched/Tests/CMakeTests/ModuleNoticesTest.cmake.in	2012-09-05 22:20:50.954508000 +1100
-@@ -22,6 +22,7 @@
- # Modules that do not require our notice.
- set(notice_exceptions
-   FindCUDA.cmake # MIT License, distributed here from upstream project
-+  FindLibLZMA.cmake # Mandriva own patch, do not copyright by Kitware
-   )
- 
- # Load the list of modules to check.
-diff -urN cmake-2.8.9/Tests/SimpleInstall/CMakeLists.txt cmake-2.8.9-patched/Tests/SimpleInstall/CMakeLists.txt
---- cmake-2.8.9/Tests/SimpleInstall/CMakeLists.txt	2012-08-10 05:15:19.000000000 +1100
-+++ cmake-2.8.9-patched/Tests/SimpleInstall/CMakeLists.txt	2012-09-05 22:20:50.955508000 +1100
-@@ -359,6 +359,11 @@
-   IF(found_bz2)
-     SET(CPACK_GENERATOR "${CPACK_GENERATOR};TBZ2")
-   ENDIF(found_bz2)
-+  FIND_PROGRAM(found_xz
-+    NAMES xz)
-+  IF(found_xz)
-+    SET(CPACK_GENERATOR "${CPACK_GENERATOR};TXZ")
-+  ENDIF(found_xz)
- ENDIF(UNIX AND NOT APPLE)
- 
- SET(CPACK_PACKAGE_EXECUTABLES "SimpleInstall" "Simple Install")
-diff -urN cmake-2.8.9/Tests/SimpleInstallS2/CMakeLists.txt cmake-2.8.9-patched/Tests/SimpleInstallS2/CMakeLists.txt
---- cmake-2.8.9/Tests/SimpleInstallS2/CMakeLists.txt	2012-08-10 05:15:19.000000000 +1100
-+++ cmake-2.8.9-patched/Tests/SimpleInstallS2/CMakeLists.txt	2012-09-05 22:20:50.955508000 +1100
-@@ -359,6 +359,11 @@
-   IF(found_bz2)
-     SET(CPACK_GENERATOR "${CPACK_GENERATOR};TBZ2")
-   ENDIF(found_bz2)
-+  FIND_PROGRAM(found_xz
-+    NAMES xz)
-+  IF(found_xz)
-+    SET(CPACK_GENERATOR "${CPACK_GENERATOR};TXZ")
-+  ENDIF(found_xz)
- ENDIF(UNIX AND NOT APPLE)
- 
- SET(CPACK_PACKAGE_EXECUTABLES "SimpleInstall" "Simple Install")
-diff -urN cmake-2.8.9/Utilities/Release/release_cmake.cmake cmake-2.8.9-patched/Utilities/Release/release_cmake.cmake
---- cmake-2.8.9/Utilities/Release/release_cmake.cmake	2012-08-10 05:15:19.000000000 +1100
-+++ cmake-2.8.9-patched/Utilities/Release/release_cmake.cmake	2012-09-05 22:20:50.955508000 +1100
-@@ -100,6 +100,13 @@
-     set(SUFFIXES ${SUFFIXES} "*.tar.bz2")
-     set(extra_files setup.hint)
-   endif("${gen}" MATCHES "Cygwin")
-+  if("${gen}" STREQUAL "TXZ")
-+    set(SUFFIXES ${SUFFIXES} "*.tar.xz")
-+  endif("${gen}" STREQUAL "TXZ")
-+  if("${gen}" MATCHES "Cygwin")
-+    set(SUFFIXES ${SUFFIXES} "*.tar.xz")
-+    set(extra_files setup.hint)
-+  endif("${gen}" MATCHES "Cygwin")
-   if("${gen}" STREQUAL "TZ")
-     set(SUFFIXES ${SUFFIXES} "*.tar.Z")
-   endif("${gen}" STREQUAL "TZ")

@@ -3,31 +3,18 @@
 #
 # Warning: do not remove the -DCMAKE_MODULE_LINKER_FLAGS command as it is required to build kde and qt apps
 #
-# A note about -DCMAKE_BUILD_TYPE=Debug that some people insists should be the default in cooker.
-# This implies there's actually someone that reverts the macro to use "Release" and rebuilds all packages
-# that uses cmake, including packages linking to packages built with cmake prior to the next stable product, 
-# during the cooker phaze. Do you think there is such a someone, and someone that would keep track of it? If so
-# please tell me who this someone is right now...
-#
-# I think this speaks for itself and what the impact will be on the whole distribution:
-#
-# libpng-1.5.7 built with "-DCMAKE_BUILD_TYPE=Debug":
-# $ objdump --all-headers ./libpng-1.5.7-debug/usr/lib64/libpng15d.so.15.7.0 | grep SONAME
-#  SONAME               libpng15d.so.15
-#
-# libpng-1.5.7 built with "-DCMAKE_BUILD_TYPE=Release":
-# $ objdump --all-headers ./libpng-1.5.7-no_debug/usr/lib64/libpng15.so.15.7.0 | grep SONAME
-#  SONAME               libpng15.so.15
-#
-%_cmake_lib_suffix64	-DLIB_SUFFIX=64
-%_cmake_skip_rpath	-DCMAKE_SKIP_RPATH:BOOL=ON
-%_cmake_verbose		-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+
+%_cmake_lib_suffix64 -DLIB_SUFFIX=64
+%_cmake_skip_rpath -DCMAKE_SKIP_RPATH:BOOL=ON
 %__cmake %{_bindir}/cmake
+%_cmake_debug %{?with_debug:debug}%{?!with_debug:release}
 
 %cmake \
     %setup_compile_flags \
     mkdir -p build \
     cd build \
+    %define enable_debug 1 \
+    %{?_enable_debug: %{expand: %%global enable_debug 1}} \
     %__cmake .. \\\
         -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} \\\
         -DCMAKE_INSTALL_LIBDIR:PATH=%{_libdir} \\\
@@ -35,11 +22,12 @@
         -DLIB_INSTALL_DIR:PATH=%{_libdir} \\\
         -DSYSCONF_INSTALL_DIR:PATH=%{_sysconfdir} \\\
         -DSHARE_INSTALL_PREFIX:PATH=%{_datadir} \\\
+        -DCMAKE_BUILD_TYPE=%{_cmake_debug} \\\
 %if "%{?_lib}" == "lib64" \
         %{?_cmake_lib_suffix64} \\\
 %endif \
         %{?_cmake_skip_rpath} \\\
-        %{?_cmake_verbose} \\\
+        %{?_cmake_verbose: -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON} \\\
         -DBUILD_SHARED_LIBS:BOOL=ON \\\
         -DBUILD_STATIC_LIBS:BOOL=OFF \\\
-        -DCMAKE_MODULE_LINKER_FLAGS="%{ldflags} -Wl,--unresolved-symbols=ignore-all"
+        -DCMAKE_MODULE_LINKER_FLAGS="%(echo %ldflags|sed -e 's#-Wl,--no-undefined##')"

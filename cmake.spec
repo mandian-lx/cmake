@@ -4,7 +4,7 @@
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	2.8.9
+Version:	2.8.10.2
 Release:	1
 Epoch:		1
 License:	BSD
@@ -13,8 +13,9 @@ Url:		http://www.cmake.org/HTML/index.html
 Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}.tar.gz
 Source1:	cmake.macros
 # fix ftlk detection
-Patch1:		cmake-2.8.9-fltk-path.patch
-Patch2:		cmake-2.8.9-xz-support.patch
+Patch1:		0001-Fix-FLTK-Find-path.patch
+Patch2:		0002-Add-XZ-support.patch
+Patch3:		0003-Disable-Test198.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
@@ -80,6 +81,7 @@ This is the Qt GUI.
 %setup -q
 %patch1 -p1
 %patch2 -p1 -b .xz~
+%patch3 -p1 -b .test153
 
 # Don't try to automagically find files in /usr/X11R6
 # But also don't change a prefix if it is not /usr
@@ -137,4 +139,4 @@ mv %{buildroot}%{_datadir}/doc/%{name} mydocs
 %check
 unset DISPLAY
 cd build
-#bin/ctest -E SubDirSpaces -V %{_smp_mflags}
+bin/ctest -E SubDirSpaces -V %{_smp_mflags}
