@@ -19,14 +19,14 @@ Patch3:		0003-Disable-Test198.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
-BuildRequires:	idn-devel
-BuildRequires:	zlib-devel
+BuildRequires:	pkgconfig(libidn)
+BuildRequires:	pkgconfig(zlib)
 BuildRequires:	xz
-BuildRequires:	expat-devel
+BuildRequires:	pkgconfig(expat)
 BuildRequires:	bzip2-devel
-BuildRequires:	libarchive-devel
-%if %qt4
-BuildRequires:	qt4-devel >= 4.4.0
+BuildRequires:	pkgconfig(libarchive)
+%if %{qt4}
+BuildRequires:	pkgconfig(QtCore)
 %endif
 BuildRequires:	gcc-gfortran
 
@@ -102,7 +102,7 @@ cd build
     --datadir=/share/%{name} \
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
-%if %qt4
+%if %{qt4}
     --qt-gui
 %endif
 
