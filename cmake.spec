@@ -1,11 +1,11 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
-%define qt4 0
+%bcond_with	bootstrap
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
 Version:	2.8.10.2
-Release:	2
+Release:	3
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -25,7 +25,7 @@ BuildRequires:	xz
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(libarchive)
-%if %{qt4}
+%if !%{with bootstrap}
 BuildRequires:	pkgconfig(QtCore)
 %endif
 BuildRequires:	gcc-gfortran
@@ -55,19 +55,19 @@ generation, and template instantiation.
 
 #-----------------------------------------------------------------------------
 
-%if %qt4
-%package -n %{name}-qtgui
+%if !%{with bootstrap}
+%package -n	%{name}-qtgui
 Summary:	Qt GUI Dialog for CMake - the Cross-platform, open-source make system
 Group:		Development/Other
 Requires:	%{name}
 
-%description -n %{name}-qtgui
+%description -n	%{name}-qtgui
 CMake is used to control the software compilation process using
 simple platform and compiler independent configuration files.
 
 This is the Qt GUI.
 
-%files -n %{name}-qtgui
+%files -n	%{name}-qtgui
 %{_bindir}/cmake-gui
 %{_datadir}/applications/CMake.desktop
 %{_datadir}/mime/packages/cmakecache.xml
@@ -80,7 +80,7 @@ This is the Qt GUI.
 %setup -q
 %patch1 -p1
 %patch2 -p1 -b .xz~
-%patch3 -p1 -b .test153
+%patch3 -p1 -b .test153~
 
 # Don't try to automagically find files in /usr/X11R6
 # But also don't change a prefix if it is not /usr
@@ -102,7 +102,7 @@ cd build
     --datadir=/share/%{name} \
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
-%if %{qt4}
+%if !%{with bootstrap}
     --qt-gui
 %endif
 
