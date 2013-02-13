@@ -29,7 +29,6 @@ BuildRequires:	libarchive-devel
 BuildRequires:	qt4-devel >= 4.4.0
 %endif
 BuildRequires:	gcc-gfortran
-Requires:	rpm-manbo-setup >= 2-10
 
 %description
 CMake is used to control the software compilation process using
