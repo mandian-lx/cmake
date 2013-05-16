@@ -1,0 +1,19 @@
+--- cmake-2.8.10.2/Modules/FindImageMagick.cmake.bero	2013-05-16 18:31:33.919975164 +0200
++++ cmake-2.8.10.2/Modules/FindImageMagick.cmake	2013-05-16 18:40:19.856400054 +0200
+@@ -73,12 +73,16 @@
+ # Helper functions
+ #---------------------------------------------------------------------
+ function(FIND_IMAGEMAGICK_API component header)
++  find_package(PkgConfig QUIET)
++  pkg_check_modules(PC_ImageMagick_${component} ${component})
+   set(ImageMagick_${component}_FOUND FALSE PARENT_SCOPE)
+ 
+   find_path(ImageMagick_${component}_INCLUDE_DIR
+     NAMES ${header}
+     PATHS
+       ${ImageMagick_INCLUDE_DIRS}
++      ${PC_ImageMagick_${component}_INCLUDEDIR}
++      ${PC_ImageMagick_${component}_INCLUDE_DIRS}
+       "[HKEY_LOCAL_MACHINE\\SOFTWARE\\ImageMagick\\Current;BinPath]/include"
+     PATH_SUFFIXES
+       ImageMagick

@@ -5,7 +5,7 @@
 Name:		cmake
 Summary:	Cross-platform, open-source make system
 Version:	2.8.10.2
-Release:	5
+Release:	7
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -19,6 +19,8 @@ Patch3:		0003-Disable-Test198.patch
 # fix ImageMagick detection (from upstream)
 Patch4:		0001-FindImageMagick-part1.patch
 Patch5:		0002-FindImageMagick-part2.patch
+# And *really* fix it (not upstream yet)
+Patch6:		0003-FindImageMagick-part3.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
