@@ -5,7 +5,7 @@
 Name:		cmake
 Summary:	Cross-platform, open-source make system
 Version:	2.8.10.2
-Release:	4
+Release:	5
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -16,6 +16,9 @@ Source1:	cmake.macros
 Patch1:		0001-Fix-FLTK-Find-path.patch
 Patch2:		0002-Add-XZ-support.patch
 Patch3:		0003-Disable-Test198.patch
+# fix ImageMagick detection (from upstream)
+Patch4:		0001-FindImageMagick-part1.patch
+Patch5:		0002-FindImageMagick-part2.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
@@ -78,9 +81,7 @@ This is the Qt GUI.
 
 %prep
 %setup -q
-%patch1 -p1
-%patch2 -p1 -b .xz~
-%patch3 -p1 -b .test153~
+%apply_patches
 
 # Don't try to automagically find files in /usr/X11R6
 # But also don't change a prefix if it is not /usr
