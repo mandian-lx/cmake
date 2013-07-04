@@ -4,8 +4,8 @@
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	2.8.10.2
-Release:	7
+Version:	2.8.11.2
+Release:	1
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -14,12 +14,8 @@ Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}.tar.gz
 Source1:	cmake.macros
 # fix ftlk detection
 Patch1:		0001-Fix-FLTK-Find-path.patch
-Patch2:		0002-Add-XZ-support.patch
 Patch3:		0003-Disable-Test198.patch
-# fix ImageMagick detection (from upstream)
-Patch4:		0001-FindImageMagick-part1.patch
-Patch5:		0002-FindImageMagick-part2.patch
-# And *really* fix it (not upstream yet)
+# Fix ImageMagick detection (not upstream yet; parts 1 and 2 are)
 Patch6:		0003-FindImageMagick-part3.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
