@@ -12,6 +12,7 @@ Group:		Development/Other
 Url:		http://www.cmake.org/HTML/index.html
 Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}.tar.gz
 Source1:	cmake.macros
+Source2:	cmake.rpmlintrc
 # fix ftlk detection
 Patch1:		0001-Fix-FLTK-Find-path.patch
 Patch3:		0003-Disable-Test198.patch
