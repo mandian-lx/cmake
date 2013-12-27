@@ -4,8 +4,8 @@
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	2.8.11.2
-Release:	5
+Version:	2.8.12
+Release:	1
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -28,7 +28,16 @@ BuildRequires:	pkgconfig(expat)
 BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(libarchive)
 %if !%{with bootstrap}
-BuildRequires:	pkgconfig(QtCore)
+BuildRequires:	qmake5
+BuildRequires:	pkgconfig(Qt5Gui)
+BuildRequires:	pkgconfig(Qt5Widgets)
+# Ensure tests of Qt5Gui's cmake builds don't result in an error
+# because libqdirectfb.so and friends have been "removed" since creating the
+# cmake module
+BuildRequires:	%{mklibname qt5gui 5}-directfb
+BuildRequires:	%{mklibname qt5gui 5}-offscreen
+BuildRequires:	%{mklibname qt5gui 5}-x11
+BuildRequires:	%{mklibname qt5gui 5}-linuxfb
 %endif
 BuildRequires:	gcc-gfortran
 
