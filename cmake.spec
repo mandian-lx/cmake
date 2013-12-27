@@ -38,6 +38,7 @@ BuildRequires:	%{mklibname qt5gui 5}-directfb
 BuildRequires:	%{mklibname qt5gui 5}-offscreen
 BuildRequires:	%{mklibname qt5gui 5}-x11
 BuildRequires:	%{mklibname qt5gui 5}-linuxfb
+BuildRequires:	%{mklibname qt5gui 5}-minimal
 %endif
 BuildRequires:	gcc-gfortran
 
