@@ -5,7 +5,7 @@
 Name:		cmake
 Summary:	Cross-platform, open-source make system
 Version:	2.8.12.2
-Release:	1
+Release:	2
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -18,6 +18,7 @@ Patch1:		0001-Fix-FLTK-Find-path.patch
 Patch3:		0003-Disable-Test198.patch
 # Fix ImageMagick detection (not upstream yet; parts 1 and 2 are)
 Patch6:		0003-FindImageMagick-part3.patch
+Patch7:		cmake-2.8.12.2-freetype-2.5.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
