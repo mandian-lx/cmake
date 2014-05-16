@@ -1,6 +1,6 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
-%bcond_without	bootstrap
+%bcond_with	bootstrap
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
