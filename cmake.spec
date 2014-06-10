@@ -4,8 +4,8 @@
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	2.8.12.2
-Release:	5
+Version:	3.0.0
+Release:	1
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -18,7 +18,6 @@ Patch1:		0001-Fix-FLTK-Find-path.patch
 Patch3:		0003-Disable-Test198.patch
 # Fix ImageMagick detection (not upstream yet; parts 1 and 2 are)
 Patch6:		0003-FindImageMagick-part3.patch
-Patch7:		cmake-2.8.12.2-freetype-2.5.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
@@ -58,14 +57,13 @@ generation, and template instantiation.
 %{_bindir}/ccmake
 %{_bindir}/ctest
 %{_bindir}/cpack
-%{_mandir}/man1/*
 %{_datadir}/%{name}
 %{_sysconfdir}/emacs/site-start.d/%{name}.el
 %{_sysconfdir}/rpm/macros.d/*
 %{_datadir}/emacs/site-lisp/cmake-mode.el
 %{_datadir}/vim/*/*
 %{_datadir}/aclocal/cmake.m4
-%doc CMakeLogo.gif Example mydocs/*
+%doc CMakeLogo.gif mydocs/*
 
 #-----------------------------------------------------------------------------
 
@@ -128,8 +126,8 @@ cd build
 %makeinstall_std -C build
 
 # cmake mode for emacs
-install -m644 Docs/cmake-mode.el -D %{buildroot}%{_datadir}/emacs/site-lisp/cmake-mode.el
-install -d %{buildroot}%{_sysconfdir}/emacs/site-start.d
+mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp %{buildroot}%{_sysconfdir}/emacs/site-start.d
+mv %{buildroot}%{_datadir}/cmake/editors/emacs/cmake-mode.el %{buildroot}%{_datadir}/emacs/site-lisp/cmake-mode.el
 cat <<EOF >%{buildroot}%{_sysconfdir}/emacs/site-start.d/%{name}.el
 (setq load-path (cons (expand-file-name "/dir/with/cmake-mode") load-path))
 (require 'cmake-mode)
@@ -140,8 +138,14 @@ cat <<EOF >%{buildroot}%{_sysconfdir}/emacs/site-start.d/%{name}.el
 EOF
 
 # cmake mode for vim
-install -m644 Docs/cmake-syntax.vim -D %{buildroot}%{_datadir}/vim/syntax/cmake.vim
-install -m644 Docs/cmake-indent.vim -D %{buildroot}%{_datadir}/vim/indent/cmake.vim
+mkdir -p %{buildroot}%{_datadir}/vim/syntax %{buildroot}%{_datadir}/vim/indent %{buildroot}%{_datadir}/vim/plugin
+mv %{buildroot}%{_datadir}/cmake/editors/vim/cmake-syntax.vim %{buildroot}%{_datadir}/vim/syntax/cmake.vim
+mv %{buildroot}%{_datadir}/cmake/editors/vim/cmake-indent.vim %{buildroot}%{_datadir}/vim/indent/cmake.vim
+mv %{buildroot}%{_datadir}/cmake/editors/vim/cmake-help.vim %{buildroot}%{_datadir}/vim/plugin/cmake-help.vim
+
+# remove directory we just cleared by moving files where editors
+# will actually find them
+rm -rf %{buildroot}%{_datadir}/cmake/editors
 
 # RPM macros
 install -m644 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/rpm/macros.d/cmake.macros
