@@ -5,7 +5,7 @@
 Name:		cmake
 Summary:	Cross-platform, open-source make system
 Version:	2.8.12.2
-Release:	1
+Release:	2
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -72,6 +72,10 @@ generation, and template instantiation.
 Summary:	Qt GUI Dialog for CMake - the Cross-platform, open-source make system
 Group:		Development/Other
 Requires:	%{name}
+# (tpg) Fix for bug https://issues.openmandriva.org/show_bug.cgi?id=833
+Requires:	%{_lib}qt5gui5
+Requires:	%{_lib}xcb-util-renderutil0
+Requires:	%{_lib}xcb-icccm4
 
 %description -n	%{name}-qtgui
 CMake is used to control the software compilation process using
