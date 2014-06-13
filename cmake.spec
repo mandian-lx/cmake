@@ -5,7 +5,7 @@
 Name:		cmake
 Summary:	Cross-platform, open-source make system
 Version:	2.8.12.2
-Release:	2
+Release:	2.1
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -74,6 +74,7 @@ Group:		Development/Other
 Requires:	%{name}
 # (tpg) Fix for bug https://issues.openmandriva.org/show_bug.cgi?id=833
 Requires:	%{_lib}qt5gui5
+Requires:	%{_lib}qt5gui5-x11
 Requires:	%{_lib}xcb-util-renderutil0
 Requires:	%{_lib}xcb-icccm4
 
