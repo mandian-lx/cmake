@@ -1,9 +1,9 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
 
 %ifnarch aarch64
-%bcond_without	bootstrap
-%else
 %bcond_with	bootstrap
+%else
+%bcond_without	bootstrap
 %endif
 
 Name:		cmake
