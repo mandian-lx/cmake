@@ -39,7 +39,6 @@ BuildRequires:	qt5-platformtheme-gtk2
 # Ensure tests of Qt5Gui's cmake builds don't result in an error
 # because libqdirectfb.so and friends have been "removed" since creating the
 # cmake module
-BuildRequires:	%{mklibname qt5gui 5}-directfb
 BuildRequires:	%{mklibname qt5gui 5}-offscreen
 BuildRequires:	%{mklibname qt5gui 5}-x11
 BuildRequires:	%{mklibname qt5gui 5}-linuxfb
