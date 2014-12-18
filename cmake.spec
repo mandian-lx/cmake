@@ -1,6 +1,6 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
-
-%ifnarch aarch64
+# fix me
+%ifnarch %armx
 %bcond_with	bootstrap
 %else
 %bcond_without	bootstrap
