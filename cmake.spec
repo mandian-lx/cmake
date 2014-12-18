@@ -8,8 +8,8 @@
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	3.0.2
-Release:	2
+Version:	3.1.0
+Release:	1
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -20,8 +20,6 @@ Source2:	cmake.rpmlintrc
 # fix ftlk detection
 Patch1:		0001-Fix-FLTK-Find-path.patch
 Patch3:		0003-Disable-Test198.patch
-# Fix ImageMagick detection (not upstream yet; parts 1 and 2 are)
-Patch6:		0003-FindImageMagick-part3.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
@@ -120,7 +118,8 @@ cd build
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
 %if !%{with bootstrap}
-    --qt-gui
+    --qt-gui \
+    --qt-qmake=%{_bindir}/qmake-qt5
 %endif
 
 %make
