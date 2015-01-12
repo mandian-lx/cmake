@@ -9,7 +9,7 @@
 Name:		cmake
 Summary:	Cross-platform, open-source make system
 Version:	3.1.0
-Release:	1
+Release:	2
 Epoch:		1
 License:	BSD
 Group:		Development/Other
@@ -20,6 +20,7 @@ Source2:	cmake.rpmlintrc
 # fix ftlk detection
 Patch1:		0001-Fix-FLTK-Find-path.patch
 Patch3:		0003-Disable-Test198.patch
+Patch4:		cmake-3.1.0-ruby-2.2.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
