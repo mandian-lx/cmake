@@ -8,7 +8,7 @@
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	3.1.2
+Version:	3.1.3
 Release:	1
 Epoch:		1
 License:	BSD
