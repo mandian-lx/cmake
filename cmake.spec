@@ -8,7 +8,7 @@
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	3.1.3
+Version:	3.2.1
 Release:	1
 Epoch:		1
 License:	BSD
@@ -25,6 +25,7 @@ BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	cmake(jsoncpp)
 BuildRequires:	xz
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	bzip2-devel
@@ -88,7 +89,7 @@ This is the Qt GUI.
 %{_bindir}/cmake-gui
 %{_datadir}/applications/CMake.desktop
 %{_datadir}/mime/packages/cmakecache.xml
-%{_datadir}/pixmaps/CMakeSetup32.png
+%{_datadir}/icons/*/*/*/CMakeSetup.png
 %endif
 
 #-----------------------------------------------------------------------------
