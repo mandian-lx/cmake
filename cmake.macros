@@ -17,7 +17,7 @@
     %{?_enable_debug: %{expand: %%global enable_debug 1}} \
     CROSSCOMPILE="" ; \
 %if %cross_compiling \
-    CROSSCOMPILE="-DCMAKE_TOOLCHAIN_FILE=\"%_prefix/%_target_platform/share/cmake/%_target_platform.toolchain\"" ; \
+    CROSSCOMPILE="-DCMAKE_TOOLCHAIN_FILE=\"%_prefix/%_target_platform/share/cmake/%_target_platform.toolchain\" -DCMAKE_CROSSCOMPILING:BOOL=ON" ; \
 %endif \
     export CROSSCOMPILE ; \
     %__cmake .. \\\

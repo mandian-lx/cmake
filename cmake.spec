@@ -6,15 +6,17 @@
 %bcond_without	bootstrap
 %endif
 
+%define beta rc2
+
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	3.2.3
-Release:	1
+Version:	3.3.0
+Release:	%{?beta:0.%{beta}.}1
 Epoch:		1
 License:	BSD
 Group:		Development/Other
 Url:		http://www.cmake.org/HTML/index.html
-Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}.tar.gz
+Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}%{?beta:-%{beta}}.tar.gz
 Source1:	cmake.macros
 Source2:	cmake.rpmlintrc
 # fix ftlk detection
@@ -95,7 +97,7 @@ This is the Qt GUI.
 #-----------------------------------------------------------------------------
 
 %prep
-%setup -q
+%setup -qn %{name}-%{version}%{?beta:-%{beta}}
 %apply_patches
 
 # Don't try to automagically find files in /usr/X11R6
