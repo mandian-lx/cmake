@@ -3,7 +3,7 @@
 %ifnarch %armx
 %bcond_with	bootstrap
 %else
-%bcond_without	bootstrap
+%bcond_with	bootstrap
 %endif
 
 %define beta rc4
@@ -11,7 +11,7 @@
 Name:		cmake
 Summary:	Cross-platform, open-source make system
 Version:	3.3.0
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Epoch:		1
 License:	BSD
 Group:		Development/Other
