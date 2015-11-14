@@ -10,7 +10,7 @@
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	3.3.2
+Version:	3.4.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}-%{beta}.tar.gz
@@ -26,6 +26,7 @@ Source1:	cmake.macros
 Source2:	cmake.rpmlintrc
 # fix ftlk detection
 Patch1:		0001-Fix-FLTK-Find-path.patch
+Patch2:		cmake-3.4.0-clang-std-version.patch
 Patch3:		0003-Disable-Test198.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
