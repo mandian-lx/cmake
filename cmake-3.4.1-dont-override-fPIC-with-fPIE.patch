@@ -1,0 +1,12 @@
+--- cmake-3.4.1/Source/cmLocalGenerator.cxx.omv~	2015-12-31 13:45:00.749768052 +0100
++++ cmake-3.4.1/Source/cmLocalGenerator.cxx	2015-12-31 13:47:35.917867985 +0100
+@@ -2230,7 +2230,8 @@ void cmLocalGenerator::AddPositionIndepe
+     flagsVar += "_COMPILE_OPTIONS_PIC";
+     picFlags = this->Makefile->GetSafeDefinition(flagsVar);
+     }
+-  if (picFlags)
++  // Don't allow -fPIE to override -fPIC
++  if (picFlags && flags.find("-fPIC")==std::string::npos)
+     {
+     std::vector<std::string> options;
+     cmSystemTools::ExpandListArgument(picFlags, options);

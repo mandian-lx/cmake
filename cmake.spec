@@ -15,7 +15,7 @@ Version:	3.4.1
 Release:	0.%{beta}.1
 Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}-%{beta}.tar.gz
 %else
-Release:	1
+Release:	2
 Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}.tar.gz
 %endif
 Epoch:		1
@@ -28,6 +28,7 @@ Source2:	cmake.rpmlintrc
 Patch1:		0001-Fix-FLTK-Find-path.patch
 Patch2:		cmake-3.4.0-clang-std-version.patch
 Patch3:		0003-Disable-Test198.patch
+Patch4:		cmake-3.4.1-dont-override-fPIC-with-fPIE.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
