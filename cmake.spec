@@ -1,4 +1,5 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
+%define debug_package %nil
 # fix me
 %ifnarch %armx
 %bcond_with	bootstrap
