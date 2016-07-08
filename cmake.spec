@@ -15,7 +15,7 @@ Version:	3.6.0
 Release:	0.%{beta}.1
 Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}-%{beta}.tar.gz
 %else
-Release:	1
+Release:	3
 Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}.tar.gz
 %endif
 Epoch:		1
@@ -74,6 +74,18 @@ generation, and template instantiation.
 %{_datadir}/emacs/site-lisp/cmake-mode.el
 %{_datadir}/vim/*/*
 %{_datadir}/aclocal/cmake.m4
+
+
+%package doc
+Summary:	Documentation for %{name}
+Group:		Development/Other
+BuildArch:	noarch
+Conflicts:	%{name} < 3.5.2-3
+
+%description doc
+Documentation for %{name}.
+
+%files doc
 %doc CMakeLogo.gif mydocs/*
 
 #-----------------------------------------------------------------------------
@@ -94,7 +106,7 @@ simple platform and compiler independent configuration files.
 
 This is the Qt GUI.
 
-%files -n	%{name}-qtgui
+%files -n %{name}-qtgui
 %{_bindir}/cmake-gui
 %{_datadir}/applications/CMake.desktop
 %{_datadir}/mime/packages/cmakecache.xml
