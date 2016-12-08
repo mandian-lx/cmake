@@ -97,10 +97,7 @@ Group:		Development/Other
 Requires:	%{name}
 # (tpg) Fix for bug https://issues.openmandriva.org/show_bug.cgi?id=833
 Requires:	%{_lib}qt5gui5
-<<<<<<< HEAD
 Requires:	%{_lib}qt5gui5-x11
-=======
->>>>>>> origin/3.0
 Requires:	%{_lib}xcb-util-renderutil0
 Requires:	%{_lib}xcb-icccm4
 
