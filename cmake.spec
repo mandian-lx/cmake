@@ -1,28 +1,40 @@
 %define shortVersion %(echo %{version} | cut -d. -f1,2)
-
+# fix me
+%ifnarch %armx
 %bcond_with	bootstrap
+%else
+%bcond_with	bootstrap
+%endif
+
+%define beta %{nil}
 
 Name:		cmake
 Summary:	Cross-platform, open-source make system
-Version:	2.8.12.2
-Release:	2.1
+Version:	3.6.3
+%if "%{beta}" != ""
+Release:	0.%{beta}.1
+Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}-%{beta}.tar.gz
+%else
+Release:	1
+Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}.tar.gz
+%endif
 Epoch:		1
 License:	BSD
 Group:		Development/Other
 Url:		http://www.cmake.org/HTML/index.html
-Source0:	http://www.cmake.org/files/v%{shortVersion}/%{name}-%{version}.tar.gz
 Source1:	cmake.macros
 Source2:	cmake.rpmlintrc
 # fix ftlk detection
 Patch1:		0001-Fix-FLTK-Find-path.patch
+Patch2:		cmake-3.4.0-clang-std-version.patch
 Patch3:		0003-Disable-Test198.patch
-# Fix ImageMagick detection (not upstream yet; parts 1 and 2 are)
-Patch6:		0003-FindImageMagick-part3.patch
+Patch4:		cmake-3.4.1-dont-override-fPIC-with-fPIE.patch
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	cmake(jsoncpp)
 BuildRequires:	xz
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	bzip2-devel
@@ -31,10 +43,10 @@ BuildRequires:	pkgconfig(libarchive)
 BuildRequires:	qmake5
 BuildRequires:	pkgconfig(Qt5Gui)
 BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	qt5-platformtheme-gtk2
 # Ensure tests of Qt5Gui's cmake builds don't result in an error
 # because libqdirectfb.so and friends have been "removed" since creating the
 # cmake module
-BuildRequires:	%{mklibname qt5gui 5}-directfb
 BuildRequires:	%{mklibname qt5gui 5}-offscreen
 BuildRequires:	%{mklibname qt5gui 5}-x11
 BuildRequires:	%{mklibname qt5gui 5}-linuxfb
@@ -56,14 +68,25 @@ generation, and template instantiation.
 %{_bindir}/ccmake
 %{_bindir}/ctest
 %{_bindir}/cpack
-%{_mandir}/man1/*
 %{_datadir}/%{name}
 %{_sysconfdir}/emacs/site-start.d/%{name}.el
 %{_sysconfdir}/rpm/macros.d/*
 %{_datadir}/emacs/site-lisp/cmake-mode.el
 %{_datadir}/vim/*/*
 %{_datadir}/aclocal/cmake.m4
-%doc CMakeLogo.gif Example mydocs/*
+
+
+%package doc
+Summary:	Documentation for %{name}
+Group:		Development/Other
+BuildArch:	noarch
+Conflicts:	%{name} < 3.5.2-3
+
+%description doc
+Documentation for %{name}.
+
+%files doc
+%doc CMakeLogo.gif mydocs/*
 
 #-----------------------------------------------------------------------------
 
@@ -74,7 +97,10 @@ Group:		Development/Other
 Requires:	%{name}
 # (tpg) Fix for bug https://issues.openmandriva.org/show_bug.cgi?id=833
 Requires:	%{_lib}qt5gui5
+<<<<<<< HEAD
 Requires:	%{_lib}qt5gui5-x11
+=======
+>>>>>>> origin/3.0
 Requires:	%{_lib}xcb-util-renderutil0
 Requires:	%{_lib}xcb-icccm4
 
@@ -84,17 +110,21 @@ simple platform and compiler independent configuration files.
 
 This is the Qt GUI.
 
-%files -n	%{name}-qtgui
+%files -n %{name}-qtgui
 %{_bindir}/cmake-gui
 %{_datadir}/applications/CMake.desktop
 %{_datadir}/mime/packages/cmakecache.xml
-%{_datadir}/pixmaps/CMakeSetup32.png
+%{_datadir}/icons/*/*/*/CMakeSetup.png
 %endif
 
 #-----------------------------------------------------------------------------
 
 %prep
+%if "%{beta}" != ""
+%setup -qn %{name}-%{version}-%{beta}
+%else
 %setup -q
+%endif
 %apply_patches
 
 # Don't try to automagically find files in /usr/X11R6
@@ -118,7 +148,8 @@ cd build
     --mandir=/share/man \
     --docdir=/share/doc/%{name} \
 %if !%{with bootstrap}
-    --qt-gui
+    --qt-gui \
+    --qt-qmake=%{_bindir}/qmake-qt5
 %endif
 
 %make
@@ -127,8 +158,8 @@ cd build
 %makeinstall_std -C build
 
 # cmake mode for emacs
-install -m644 Docs/cmake-mode.el -D %{buildroot}%{_datadir}/emacs/site-lisp/cmake-mode.el
-install -d %{buildroot}%{_sysconfdir}/emacs/site-start.d
+mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp %{buildroot}%{_sysconfdir}/emacs/site-start.d
+mv %{buildroot}%{_datadir}/cmake/editors/emacs/cmake-mode.el %{buildroot}%{_datadir}/emacs/site-lisp/cmake-mode.el
 cat <<EOF >%{buildroot}%{_sysconfdir}/emacs/site-start.d/%{name}.el
 (setq load-path (cons (expand-file-name "/dir/with/cmake-mode") load-path))
 (require 'cmake-mode)
@@ -139,8 +170,14 @@ cat <<EOF >%{buildroot}%{_sysconfdir}/emacs/site-start.d/%{name}.el
 EOF
 
 # cmake mode for vim
-install -m644 Docs/cmake-syntax.vim -D %{buildroot}%{_datadir}/vim/syntax/cmake.vim
-install -m644 Docs/cmake-indent.vim -D %{buildroot}%{_datadir}/vim/indent/cmake.vim
+mkdir -p %{buildroot}%{_datadir}/vim/syntax %{buildroot}%{_datadir}/vim/indent %{buildroot}%{_datadir}/vim/plugin
+mv %{buildroot}%{_datadir}/cmake/editors/vim/cmake-syntax.vim %{buildroot}%{_datadir}/vim/syntax/cmake.vim
+mv %{buildroot}%{_datadir}/cmake/editors/vim/cmake-indent.vim %{buildroot}%{_datadir}/vim/indent/cmake.vim
+mv %{buildroot}%{_datadir}/cmake/editors/vim/cmake-help.vim %{buildroot}%{_datadir}/vim/plugin/cmake-help.vim
+
+# remove directory we just cleared by moving files where editors
+# will actually find them
+rm -rf %{buildroot}%{_datadir}/cmake/editors
 
 # RPM macros
 install -m644 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/rpm/macros.d/cmake.macros

@@ -1,39 +1,48 @@
 #
 # Macros for cmake
 #
-# Warning: do not remove the -DCMAKE_MODULE_LINKER_FLAGS command as it is required to build kde and qt apps
-#
 
-%_cmake_lib_suffix64 -DLIB_SUFFIX=64
-%_cmake_skip_rpath -DCMAKE_SKIP_RPATH:BOOL=ON
-%__cmake %{_bindir}/cmake
-%_cmake_debug %{?with_debug:debug}%{?!with_debug:release}
+%__cmake	%{_bindir}/cmake
+
+%_cmake_lib_suffix64	-DLIB_SUFFIX=64
+%_cmake_skip_rpath	-DCMAKE_SKIP_RPATH:BOOL=ON
+%_cmake_debug		%{?with_debug:debug}%{?!with_debug:release}
+%_cmake_verbose		%{?with_debug:-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON}%{nil}
+%_cmake_version		%(%{__cmake} --version|sed -e 's#.* \(\S*\)$#\1#g')
 
 %cmake \
-    %setup_compile_flags \
-    mkdir -p build \
-    cd build \
-    %define enable_debug 1 \
-    %{?_enable_debug: %{expand: %%global enable_debug 1}} \
-    CROSSCOMPILE="" ; \
-%if %cross_compiling \
-    CROSSCOMPILE="-DCMAKE_TOOLCHAIN_FILE=\"%_prefix/%_target_platform/share/cmake/%_target_platform.toolchain\"" ; \
+	%setup_compile_flags \
+	mkdir -p build \
+	cd build \
+	%define enable_debug 1 \
+	%{?_enable_debug: %{expand: %%global enable_debug 1}} \
+	CROSSCOMPILE="" ; \
+%if %{cross_compiling} \
+	CROSSCOMPILE="-DCMAKE_TOOLCHAIN_FILE=\"%_prefix/%_target_platform/share/cmake/%_target_platform.toolchain\" -DCMAKE_CROSSCOMPILING:BOOL=ON" ; \
 %endif \
-    export CROSSCOMPILE ; \
-    %__cmake .. \\\
-        $CROSSCOMPILE \\\
-        -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} \\\
-        -DCMAKE_INSTALL_LIBDIR:PATH=%{_libdir} \\\
-        -DINCLUDE_INSTALL_DIR:PATH=%{_includedir} \\\
-        -DLIB_INSTALL_DIR:PATH=%{_libdir} \\\
-        -DSYSCONF_INSTALL_DIR:PATH=%{_sysconfdir} \\\
-        -DSHARE_INSTALL_PREFIX:PATH=%{_datadir} \\\
-        -DCMAKE_BUILD_TYPE=%{_cmake_debug} \\\
+	export CROSSCOMPILE ; \
+	%__cmake .. \\\
+		$CROSSCOMPILE \\\
+		%{_cmake_skip_rpath} \\\
+		%{_cmake_verbose} \\\
+		-DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} \\\
+		-DCMAKE_INSTALL_LIBDIR:PATH=%{_lib} \\\
+		-DLIB_INSTALL_DIR:PATH=%{_lib} \\\
+		-DSYSCONF_INSTALL_DIR:PATH=%{_sysconfdir} \\\
+		-DCMAKE_BUILD_TYPE=%{_cmake_debug} \\\
 %if "%{?_lib}" == "lib64" \
-        %{?_cmake_lib_suffix64} \\\
+		%{?_cmake_lib_suffix64} \\\
 %endif \
-        %{?_cmake_skip_rpath} \\\
-        %{?_cmake_verbose: -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON} \\\
-        -DBUILD_SHARED_LIBS:BOOL=ON \\\
-        -DBUILD_STATIC_LIBS:BOOL=OFF \\\
-        -DCMAKE_MODULE_LINKER_FLAGS="%(echo %ldflags|sed -e 's#-Wl,--no-undefined##')"
+		%{?_cmake_skip_rpath} \\\
+		%{?_cmake_verbose: -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON} \\\
+		-DBUILD_SHARED_LIBS:BOOL=ON \\\
+		-DBUILD_STATIC_LIBS:BOOL=OFF \\\
+		-DCMAKE_C_FLAGS="${CFLAGS:-%{optflags}}" \\\
+		-DCMAKE_C_FLAGS_RELEASE="${CFLAGS:-%{optflags}}" \\\
+		-DCMAKE_C_FLAGS_RELWITHDEBINFO="${CFLAGS:-%{optflags}}" \\\
+		-DCMAKE_CXX_FLAGS="${CXXFLAGS:-%{optflags}}" \\\
+		-DCMAKE_CXX_FLAGS_RELEASE="${CXXFLAGS:-%{optflags}}" \\\
+		-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${CXXFLAGS:-%{optflags}}" \\\
+		-DCMAKE_EXE_LINKER_FLAGS="${LDFLAGS:-%{ldflags}}" \\\
+		-DCMAKE_SHARED_LINKER_FLAGS="${LDFLAGS:-%{ldflags}}" \\\
+		-DCMAKE_MODULE_LINKER_FLAGS="%(echo ${LDFLAGS:-%{ldflags}}|sed -e 's#-Wl,--no-undefined##')"
